@@ -1,0 +1,5 @@
+dsn: ""
+mode: ""
+jwt:
+  secret: ""
+  expire_duration:
