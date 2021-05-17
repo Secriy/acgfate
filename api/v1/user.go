@@ -22,7 +22,7 @@ import (
 func UserRegister(c *gin.Context) {
 	var form user.RegisterService
 	if err := c.ShouldBind(&form); err == nil {
-		res := form.Register(c)
+		res := form.Register()
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, serializer.ErrorResponse(utils.ParamErr, err))
@@ -42,7 +42,7 @@ func UserRegister(c *gin.Context) {
 func UserLogin(c *gin.Context) {
 	var form user.LoginService
 	if err := c.ShouldBind(&form); err == nil {
-		res := form.Login(c)
+		res := form.Login()
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, serializer.ErrorResponse(utils.ParamErr, err))

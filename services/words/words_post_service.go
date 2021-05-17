@@ -8,7 +8,7 @@ import (
 )
 
 type PostService struct {
-	Content string `json:"content" form:"content" binding:"required,max=1000"`
+	Content string `json:"content" binding:"required,max=1000"`
 }
 
 func (service *PostService) Post(c *gin.Context) serializer.Response {
@@ -20,6 +20,11 @@ func (service *PostService) Post(c *gin.Context) serializer.Response {
 	if err := model.DB.Create(&words).Error; err != nil {
 		return serializer.Error(utils.WordsPostErr, utils.GetResMsg(utils.WordsPostErr))
 	}
+	// 获取发布者昵称
+	user, err := model.GetUser(words.Publisher)
+	if err != nil {
+		return serializer.Error(utils.WordsPostErr, utils.GetResMsg(utils.WordsPostErr))
+	}
 
-	return serializer.BuildResponse(utils.Success, serializer.BuildWordsResponse(&words), "发表成功")
+	return serializer.BuildResponse(utils.Success, serializer.BuildWordsResponse(&words, user.Nickname), "发表成功")
 }

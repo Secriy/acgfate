@@ -10,7 +10,7 @@ import (
 
 func CheckSilence() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		currentUser, err := model.GetUser(c.GetUint64("UID"))
+		user, err := model.GetUser(c.GetUint64("UID"))
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": utils.Error,
@@ -19,7 +19,7 @@ func CheckSilence() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if currentUser.Silence {
+		if user.Silence {
 			c.JSON(http.StatusOK, gin.H{
 				"code": utils.AccSilence,
 				"msg":  "账号已被禁言",

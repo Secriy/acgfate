@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 
 	"acgfate/utils"
 	"github.com/gin-gonic/gin"
@@ -13,15 +14,24 @@ func JWTAuthRequired() gin.HandlerFunc {
 		if authHeader == "" {
 			c.JSON(http.StatusOK, gin.H{
 				"code": utils.AccAuthErr,
-				"msg":  "请求头中auth为空",
+				"msg":  "Authorization为空",
 			})
 			c.Abort()
 			return
 		}
-		info, err := utils.ParseToken(authHeader)
+		token := strings.SplitN(authHeader, "Bearer ", 2)
+		if token[0] != "" {
+			c.JSON(http.StatusOK, gin.H{
+				"code": utils.AccAuthErr,
+				"msg":  "Authorization格式不正确",
+			})
+			c.Abort()
+			return
+		}
+		info, err := utils.ParseToken(token[1])
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"code": utils.Error,
+				"code": utils.AccAuthErr,
 				"msg":  err.Error(),
 			})
 			c.Abort()

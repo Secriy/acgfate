@@ -17,8 +17,8 @@ const (
 )
 
 var ResMsgFlags = map[int]string{
-	Success:      "ok",
-	Error:        "fail",
+	Success:      "Success",
+	Error:        "Fail",
 	WordsPostErr: "发布失败",
 }
 

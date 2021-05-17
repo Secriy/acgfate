@@ -294,20 +294,34 @@ var doc = `{
                 }
             }
         },
+        "serializer.UserPointsResponse": {
+            "type": "object",
+            "properties": {
+                "coins": {
+                    "type": "integer"
+                },
+                "exp": {
+                    "type": "integer"
+                },
+                "level": {
+                    "type": "integer"
+                }
+            }
+        },
         "serializer.UserResponse": {
             "type": "object",
             "properties": {
                 "avatar": {
                     "type": "string"
                 },
+                "birthday": {
+                    "type": "string"
+                },
                 "gender": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "join_time": {
                     "type": "string"
-                },
-                "level": {
-                    "type": "integer"
                 },
                 "mail": {
                     "type": "string"
@@ -320,6 +334,9 @@ var doc = `{
                 },
                 "uid": {
                     "type": "integer"
+                },
+                "user_points": {
+                    "$ref": "#/definitions/serializer.UserPointsResponse"
                 },
                 "username": {
                     "type": "string"
@@ -336,10 +353,13 @@ var doc = `{
                     "type": "string"
                 },
                 "publisher": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "wid": {
+                    "type": "integer"
                 }
             }
         },
@@ -384,6 +404,9 @@ var doc = `{
         "user.UpdateService": {
             "type": "object",
             "properties": {
+                "birthday": {
+                    "type": "string"
+                },
                 "gender": {
                     "type": "integer"
                 },

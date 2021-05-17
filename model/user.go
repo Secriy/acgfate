@@ -7,20 +7,25 @@ import (
 )
 
 const (
-	Male = iota
+	Private = iota + 1
+	Male
 	Female
-	Private
 	Other
 )
 
 var GenderFlags = map[int]string{
+	Private: "保密",
 	Male:    "男",
 	Female:  "女",
-	Private: "保密",
 	Other:   "其他",
 }
 
 type User struct {
+	UserInfo
+	UserPoints
+}
+
+type UserInfo struct {
 	UID       uint64 `gorm:"primaryKey;unique;autoIncrement;comment:'用户ID'"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -30,15 +35,24 @@ type User struct {
 	Nickname  string         `gorm:"comment:'昵称'"`
 	Mail      string         `gorm:"comment:'邮箱'"`
 	Avatar    string         `gorm:"comment:'头像'"`
-	Gender    uint8          `gorm:"comment:'性别'"`
-	Birthday  time.Time      `gorm:"comment:'生日'"`
-	Level     uint8          `gorm:"comment:'等级'"`
+	Gender    uint8          `gorm:"comment:'性别';default:1"`
+	Birthday  string         `gorm:"comment:'生日'"`
 	JoinTime  time.Time      `gorm:"comment:'加入时间'"`
-	Silence   bool           `gorm:"comment:'禁言'"`
+	Silence   bool           `gorm:"comment:'禁言';default:false"`
+}
+
+type UserPoints struct {
+	UID   uint64 `gorm:"primaryKey;unique;autoIncrement;comment:'用户ID'"`
+	EXP   uint   `gorm:"comment:'经验值';default:0"`
+	Level uint8  `gorm:"comment:'等级';default:0"`
+	Coins uint   `gorm:"comment:'点数';default:0"`
+}
+
+type PremiumUser struct {
 }
 
 // CheckPass 检查密码是否正确
-func (u *User) CheckPass(password string) bool {
+func (u *UserInfo) CheckPass(password string) bool {
 	if u.Password == password {
 		return true
 	}
@@ -47,9 +61,18 @@ func (u *User) CheckPass(password string) bool {
 }
 
 // GetUser 获取当前用户模型
-func GetUser(uid interface{}) (User, error) {
-	var user User
-	res := DB.First(&user, uid)
+func GetUser(uid interface{}) (user User, err error) {
+	var userInfo UserInfo
+	var userPoints UserPoints
+	err = DB.First(&userInfo, uid).Error
+	if err != nil {
+		return
+	}
+	err = DB.First(&userPoints, uid).Error
+	user = User{
+		userInfo,
+		userPoints,
+	}
 
-	return user, res.Error
+	return
 }
