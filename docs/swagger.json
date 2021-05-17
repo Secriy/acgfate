@@ -1,0 +1,395 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "The RESTFul API of Server",
+        "title": "ACG.Fate API",
+        "contact": {},
+        "version": "0.0.1"
+    },
+    "host": "127.0.0.1:3000",
+    "basePath": "/api/v1",
+    "paths": {
+        "/user/login": {
+            "post": {
+                "description": "用户登录接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "用户名, 密码",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.LoginService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: Success",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.LoginResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/me": {
+            "get": {
+                "description": "用户个人信息接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "用户个人信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: Success",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.UserResponse"
+                        }
+                    },
+                    "50001": {
+                        "description": "msg: 查询个人信息错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "description": "用户注册接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "用户名, 密码, 邮箱, 昵称",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.RegisterService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: Success",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.UserResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/update": {
+            "post": {
+                "description": "用户信息更新接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "用户信息更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "用户信息",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UpdateService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: \"Success",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.UserResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/words/:id": {
+            "get": {
+                "description": "文字查看接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Words"
+                ],
+                "summary": "文字查看",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Words ID",
+                        "name": "WID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg:\"获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.WordsResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/words/post": {
+            "post": {
+                "description": "文字发表接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Words"
+                ],
+                "summary": "文字发表",
+                "parameters": [
+                    {
+                        "description": "文字发表信息",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/words.PostService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg:\"发表成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.WordsResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "serializer.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "description": "Token",
+                    "type": "string"
+                },
+                "uid": {
+                    "description": "UID",
+                    "type": "integer"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string"
+                }
+            }
+        },
+        "serializer.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "serializer.UserResponse": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "integer"
+                },
+                "join_time": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "integer"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "silence": {
+                    "type": "boolean"
+                },
+                "uid": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "serializer.WordsResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "create_at": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginService": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.RegisterService": {
+            "type": "object",
+            "required": [
+                "mail",
+                "nickname",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "mail": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UpdateService": {
+            "type": "object",
+            "properties": {
+                "gender": {
+                    "type": "integer"
+                },
+                "mail": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                }
+            }
+        },
+        "words.PostService": {
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
