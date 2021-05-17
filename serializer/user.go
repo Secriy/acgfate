@@ -6,12 +6,14 @@ import (
 	"acgfate/model"
 )
 
+// LoginResponse 登录信息返回
 type LoginResponse struct {
 	UID      uint64 `json:"uid"`      // UID
 	Username string `json:"username"` // 用户名
 	Token    string `json:"token"`    // Token
 }
 
+// UserResponse 用户信息返回
 type UserResponse struct {
 	UID      uint64    `json:"uid"`
 	Username string    `json:"username"`
@@ -24,6 +26,7 @@ type UserResponse struct {
 	Silence  bool      `json:"silence"`
 }
 
+// BuildLoginResponse 登录信息返回构建
 func BuildLoginResponse(user *model.User, token string) LoginResponse {
 	return LoginResponse{
 		UID:      user.UID,
@@ -32,6 +35,7 @@ func BuildLoginResponse(user *model.User, token string) LoginResponse {
 	}
 }
 
+// BuildUserResponse 用户信息返回构建
 func BuildUserResponse(user *model.User) UserResponse {
 	return UserResponse{
 		UID:      user.UID,
@@ -39,7 +43,7 @@ func BuildUserResponse(user *model.User) UserResponse {
 		Nickname: user.Nickname,
 		Mail:     user.Mail,
 		Avatar:   user.Avatar,
-		Gender:   user.Avatar,
+		Gender:   model.GenderFlags[int(user.Gender)],
 		Level:    user.Level,
 		JoinTime: user.JoinTime,
 		Silence:  user.Silence,

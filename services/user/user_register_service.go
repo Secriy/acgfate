@@ -1,12 +1,11 @@
 package user
 
 import (
-	"fmt"
 	"time"
 
-	config "acgfate/conf"
 	"acgfate/model"
 	"acgfate/serializer"
+	"acgfate/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +16,7 @@ type RegisterService struct {
 	Mail     string `json:"mail" form:"mail" binding:"required,email"`
 }
 
+// Register 用户注册服务
 func (service RegisterService) Register(c *gin.Context) serializer.Response {
 	user := model.User{
 		Username: service.Username,
@@ -29,13 +29,12 @@ func (service RegisterService) Register(c *gin.Context) serializer.Response {
 	}
 	// 判断用户名是否已经存在
 	if err := model.DB.Where("username = ?", service.Username).First(&user).Error; err == nil {
-		return serializer.Error(config.AccountUsernameErr, "用户名已被他人使用")
+		return serializer.Error(utils.AccCreateErr, "用户名已被他人使用")
 	}
 	// 创建用户
 	if err := model.DB.Create(&user).Error; err != nil {
-		fmt.Println(err)
-		return serializer.Error(4000, "注册失败")
+		return serializer.Error(utils.DatabaseErr, "注册失败")
 	}
 
-	return serializer.BuildResponse(200, serializer.BuildUserResponse(&user), "注册成功")
+	return serializer.BuildResponse(200, serializer.BuildUserResponse(&user), utils.GetResMsg(utils.Success))
 }

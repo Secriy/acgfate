@@ -31,5 +31,5 @@ func InitDatabase(dsn string) {
 }
 
 func migration() {
-	_ = DB.AutoMigrate(&User{})
+	_ = DB.AutoMigrate(&User{}, &Words{})
 }

@@ -23,3 +23,12 @@ func Error(code int, msg string) Response {
 		Msg:  msg,
 	}
 }
+
+// ErrorResponse 错误返回
+func ErrorResponse(code int, err error) Response {
+	return Response{
+		Code: code,
+		Data: nil,
+		Msg:  err.Error(),
+	}
+}

@@ -13,29 +13,43 @@ const (
 	Other
 )
 
+var GenderFlags = map[int]string{
+	Male:    "男",
+	Female:  "女",
+	Private: "保密",
+	Other:   "其他",
+}
+
 type User struct {
 	UID       uint64 `gorm:"primaryKey;unique;autoIncrement;comment:'用户ID'"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
-	Username  string         `gorm:"unique;comment:'用户名'" json:"username"`
-	Password  string         `gorm:"comment:'密码'" json:"password"`
-	Nickname  string         `gorm:"comment:'昵称'" json:"nickname"`
-	Mail      string         `gorm:"comment:'邮箱'" json:"mail"`
-	Avatar    string         `gorm:"comment:'头像'" json:"avatar"`
-	Gender    string         `gorm:"comment:'性别'" json:"gender"`
-	Level     uint8          `gorm:"comment:'等级'" json:"level"`
-	JoinTime  time.Time      `gorm:"comment:'加入时间'" json:"join_time"`
-	Silence   bool           `gorm:"comment:'禁言'" json:"silence"`
+	Username  string         `gorm:"unique;comment:'用户名'"`
+	Password  string         `gorm:"comment:'密码'" `
+	Nickname  string         `gorm:"comment:'昵称'"`
+	Mail      string         `gorm:"comment:'邮箱'"`
+	Avatar    string         `gorm:"comment:'头像'"`
+	Gender    uint8          `gorm:"comment:'性别'"`
+	Birthday  time.Time      `gorm:"comment:'生日'"`
+	Level     uint8          `gorm:"comment:'等级'"`
+	JoinTime  time.Time      `gorm:"comment:'加入时间'"`
+	Silence   bool           `gorm:"comment:'禁言'"`
 }
 
-func (u User) CheckPass(password string) bool {
+// CheckPass 检查密码是否正确
+func (u *User) CheckPass(password string) bool {
 	if u.Password == password {
 		return true
 	}
+
 	return false
 }
 
-func (u User) GetUserID() uint64 {
-	return u.UID
+// GetUser 获取当前用户模型
+func GetUser(uid interface{}) (User, error) {
+	var user User
+	res := DB.First(&user, uid)
+
+	return user, res.Error
 }
