@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"acgfate/model"
-	"acgfate/utils"
+	sz "acgfate/serializer"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +13,7 @@ func CheckSilence() gin.HandlerFunc {
 		user, err := model.GetUser(c.GetUint64("UID"))
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"code": utils.Error,
+				"code": sz.Error,
 				"msg":  err.Error(),
 			})
 			c.Abort()
@@ -21,7 +21,7 @@ func CheckSilence() gin.HandlerFunc {
 		}
 		if user.Silence {
 			c.JSON(http.StatusOK, gin.H{
-				"code": utils.AccSilence,
+				"code": sz.AccSilence,
 				"msg":  "账号已被禁言",
 			})
 			c.Abort()

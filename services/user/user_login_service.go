@@ -16,16 +16,16 @@ func (service *LoginService) Login() sz.Response {
 	var user model.UserInfo
 	// 检查账号是否存在
 	if err := model.DB.Where("username = ?", service.Username).First(&user).Error; err != nil {
-		return sz.ErrorResonse(sz.AccAuthErr, "账号或密码错误")
+		return sz.ErrorResponse(sz.AccAuthErr, "账号或密码错误")
 	}
 	// 检查密码是否正确
 	if !user.CheckPass(service.Password) {
-		return sz.ErrorResonse(sz.AccAuthErr, "账号或密码错误")
+		return sz.ErrorResponse(sz.AccAuthErr, "账号或密码错误")
 	}
 	// 生成用户Token
 	token, err := utils.GenToken(user.UID)
 	if err != nil {
-		return sz.ErrorResonse(sz.Error, "生成token失败")
+		return sz.ErrorResponse(sz.Error, "生成token失败")
 	}
 
 	return sz.BuildResponse(sz.Success, sz.BuildLoginResponse(&user, token), "登录成功")

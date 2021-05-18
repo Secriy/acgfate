@@ -17,12 +17,12 @@ func (service *PostService) Post(c *gin.Context) sz.Response {
 	}
 	// 新增文字
 	if err := model.DB.Create(&words).Error; err != nil {
-		return sz.ErrorResonse(sz.WordsPostErr, sz.GetResMsg(sz.WordsPostErr))
+		return sz.ErrorResponse(sz.WordsPostErr, sz.GetResMsg(sz.WordsPostErr))
 	}
 	// 获取发布者昵称
 	user, err := model.GetUser(words.Publisher)
 	if err != nil {
-		return sz.ErrorResonse(sz.WordsPostErr, sz.GetResMsg(sz.WordsPostErr))
+		return sz.ErrorResponse(sz.WordsPostErr, sz.GetResMsg(sz.WordsPostErr))
 	}
 
 	return sz.BuildResponse(sz.Success, sz.BuildWordsResponse(&words, user.Nickname), "发表成功")

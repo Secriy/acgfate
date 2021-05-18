@@ -26,14 +26,14 @@ func (service RegisterService) Register() sz.Response {
 	}
 	// 判断用户名是否已经存在
 	if err := model.DB.Where("username = ?", service.Username).First(&userInfo).Error; err == nil {
-		return sz.ErrorResonse(sz.AccCreateErr, "用户名已被他人使用")
+		return sz.ErrorResponse(sz.AccCreateErr, "用户名已被他人使用")
 	}
 	// 创建用户
 	if err := model.DB.Create(&userInfo).Error; err != nil {
-		return sz.ErrorResonse(sz.DatabaseErr, "创建用户失败")
+		return sz.ErrorResponse(sz.DatabaseErr, "创建用户失败")
 	}
 	if err := model.DB.Create(&userPoints).Error; err != nil {
-		return sz.ErrorResonse(sz.DatabaseErr, "创建用户失败")
+		return sz.ErrorResponse(sz.DatabaseErr, "创建用户失败")
 	}
 	// 构建模型
 	user := model.User{

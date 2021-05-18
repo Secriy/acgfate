@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	sz "acgfate/serializer"
 	"acgfate/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,7 @@ func JWTAuthRequired() gin.HandlerFunc {
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusOK, gin.H{
-				"code": utils.AccAuthErr,
+				"code": sz.AccAuthErr,
 				"msg":  "Authorization为空",
 			})
 			c.Abort()
@@ -22,7 +23,7 @@ func JWTAuthRequired() gin.HandlerFunc {
 		token := strings.SplitN(authHeader, "Bearer ", 2)
 		if token[0] != "" {
 			c.JSON(http.StatusOK, gin.H{
-				"code": utils.AccAuthErr,
+				"code": sz.AccAuthErr,
 				"msg":  "Authorization格式不正确",
 			})
 			c.Abort()
@@ -31,7 +32,7 @@ func JWTAuthRequired() gin.HandlerFunc {
 		info, err := utils.ParseToken(token[1])
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"code": utils.AccAuthErr,
+				"code": sz.AccAuthErr,
 				"msg":  err.Error(),
 			})
 			c.Abort()

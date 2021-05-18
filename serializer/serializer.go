@@ -45,8 +45,8 @@ func BuildResponse(code int, data interface{}, msg string) Response {
 	}
 }
 
-// ErrorResonse 错误信息构建
-func ErrorResonse(code int, msg string) Response {
+// ErrorResponse 错误信息构建
+func ErrorResponse(code int, msg string) Response {
 	return Response{
 		Code: code,
 		Data: nil,

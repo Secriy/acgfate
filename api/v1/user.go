@@ -67,7 +67,7 @@ func UserMe(c *gin.Context) {
 	}
 }
 
-// UpdateService 用户信息更新
+// UserUpdate 用户信息更新
 // @Summary 用户信息更新
 // @Description 用户信息更新接口
 // @Tags User
@@ -78,7 +78,7 @@ func UserMe(c *gin.Context) {
 // @Success 0 {object} serializer.UserResponse "msg: "Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/update [post]
-func UpdateService(c *gin.Context) {
+func UserUpdate(c *gin.Context) {
 	var form user.UpdateService
 	if err := c.ShouldBind(&form); err == nil {
 		res := form.Update(c)

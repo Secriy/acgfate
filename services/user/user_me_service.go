@@ -14,10 +14,10 @@ func (service *MeService) Me(c *gin.Context) sz.Response {
 	var userPoints model.UserPoints
 	// 绑定数据
 	if err := model.DB.First(&userInfo, c.GetUint64("UID")).Error; err != nil {
-		return sz.ErrorResonse(sz.Error, "查询个人信息错误")
+		return sz.ErrorResponse(sz.Error, "查询个人信息错误")
 	}
 	if err := model.DB.First(&userPoints, c.GetUint64("UID")).Error; err != nil {
-		return sz.ErrorResonse(sz.Error, "查询个人信息错误")
+		return sz.ErrorResponse(sz.Error, "查询个人信息错误")
 	}
 	// 构建模型
 	user := model.User{

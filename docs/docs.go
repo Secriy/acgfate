@@ -300,7 +300,7 @@ var doc = `{
                 "coins": {
                     "type": "integer"
                 },
-                "exp": {
+                "points": {
                     "type": "integer"
                 },
                 "level": {

@@ -1,8 +1,6 @@
 package serializer
 
 import (
-	"time"
-
 	"acgfate/model"
 )
 
@@ -22,16 +20,12 @@ type UserResponse struct {
 	Avatar     string             `json:"avatar"`
 	Gender     string             `json:"gender"`
 	Birthday   string             `json:"birthday"`
-	JoinTime   time.Time          `json:"join_time"`
+	JoinTime   int64              `json:"join_time"`
 	Silence    bool               `json:"silence"`
 	UserPoints UserPointsResponse `json:"user_points"`
 }
 
-// UserPointsResponse 用户点数信息
-type UserPointsResponse struct {
-	EXP   uint  `json:"exp"`
-	Level uint8 `json:"level"`
-	Coins uint  `json:"coins"`
+type UserLevelResponse struct {
 }
 
 // BuildLoginResponse 登录信息返回构建
@@ -53,21 +47,12 @@ func BuildUserResponse(user *model.User) UserResponse {
 		Avatar:   user.Avatar,
 		Gender:   model.GenderFlags[int(user.Gender)],
 		Birthday: user.Birthday,
-		JoinTime: user.JoinTime,
+		JoinTime: user.JoinTime.Unix(),
 		Silence:  user.Silence,
 		UserPoints: UserPointsResponse{
 			EXP:   user.EXP,
-			Level: user.Level,
+			Level: model.FormatLevel(user.EXP),
 			Coins: user.Coins,
 		},
-	}
-}
-
-// BuildUserPointsResponse 用户点数信息返回构建
-func BuildUserPointsResponse(user *model.UserPoints) UserPointsResponse {
-	return UserPointsResponse{
-		EXP:   user.EXP,
-		Level: user.Level,
-		Coins: user.Coins,
 	}
 }

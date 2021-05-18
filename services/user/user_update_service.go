@@ -17,7 +17,7 @@ type UpdateService struct {
 func (service *UpdateService) Update(c *gin.Context) sz.Response {
 	user, err := model.GetUser(c.GetUint64("UID"))
 	if err != nil {
-		return sz.ErrorResonse(sz.Error, "获取当前用户失败")
+		return sz.ErrorResponse(sz.Error, "获取当前用户失败")
 	}
 	model.DB.Model(&user.UserInfo).Updates(model.UserInfo{
 		Nickname: service.Nickname,
