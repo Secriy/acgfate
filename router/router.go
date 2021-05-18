@@ -26,6 +26,7 @@ func InitRouter() *gin.Engine {
 
 	InitUserRouter(rGroup)
 	InitWordsRouter(rGroup)
+	InitPointsRouter(rGroup)
 
 	return r
 }

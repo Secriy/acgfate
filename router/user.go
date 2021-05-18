@@ -17,7 +17,7 @@ func InitUserRouter(r *gin.RouterGroup) {
 	// 需要鉴权的路由组
 	authGroup := pubGroup.Use(middleware.JWTAuthRequired())
 	{
-		authGroup.GET("me", v1.UserMe)            // 获取个人信息
-		authGroup.PUT("update", v1.UpdateService) // 更新个人信息
+		authGroup.GET("me", v1.UserMe)         // 获取个人信息
+		authGroup.PUT("update", v1.UserUpdate) // 更新个人信息
 	}
 }

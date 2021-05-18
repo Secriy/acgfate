@@ -11,6 +11,8 @@ const (
 	AccCreateErr = 40002
 	AccSilence   = 40009
 
+	SignErr = 60001
+
 	WordsPostErr = 41001
 
 	DatabaseErr = 50002

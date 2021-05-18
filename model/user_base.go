@@ -41,15 +41,8 @@ type UserInfo struct {
 	Silence   bool           `gorm:"comment:'禁言';default:false"`
 }
 
-type UserPoints struct {
-	UID   uint64 `gorm:"primaryKey;unique;autoIncrement;comment:'用户ID'"`
-	EXP   uint   `gorm:"comment:'经验值';default:0"`
-	Level uint8  `gorm:"comment:'等级';default:0"`
-	Coins uint   `gorm:"comment:'点数';default:0"`
-}
-
-type PremiumUser struct {
-}
+// type PremiumUser struct {
+// }
 
 // CheckPass 检查密码是否正确
 func (u *UserInfo) CheckPass(password string) bool {
