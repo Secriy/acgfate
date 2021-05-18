@@ -4,8 +4,7 @@ import (
 	"time"
 
 	"acgfate/model"
-	"acgfate/serializer"
-	"acgfate/utils"
+	sz "acgfate/serializer"
 )
 
 type RegisterService struct {
@@ -16,7 +15,7 @@ type RegisterService struct {
 }
 
 // Register 用户注册服务
-func (service RegisterService) Register() serializer.Response {
+func (service RegisterService) Register() sz.Response {
 	var userPoints model.UserPoints
 	var userInfo = model.UserInfo{
 		Username: service.Username,
@@ -27,14 +26,14 @@ func (service RegisterService) Register() serializer.Response {
 	}
 	// 判断用户名是否已经存在
 	if err := model.DB.Where("username = ?", service.Username).First(&userInfo).Error; err == nil {
-		return serializer.Error(utils.AccCreateErr, "用户名已被他人使用")
+		return sz.ErrorResonse(sz.AccCreateErr, "用户名已被他人使用")
 	}
 	// 创建用户
 	if err := model.DB.Create(&userInfo).Error; err != nil {
-		return serializer.Error(utils.DatabaseErr, "创建用户失败")
+		return sz.ErrorResonse(sz.DatabaseErr, "创建用户失败")
 	}
 	if err := model.DB.Create(&userPoints).Error; err != nil {
-		return serializer.Error(utils.DatabaseErr, "创建用户失败")
+		return sz.ErrorResonse(sz.DatabaseErr, "创建用户失败")
 	}
 	// 构建模型
 	user := model.User{
@@ -42,5 +41,5 @@ func (service RegisterService) Register() serializer.Response {
 		UserPoints: userPoints,
 	}
 
-	return serializer.BuildResponse(200, serializer.BuildUserResponse(&user), utils.GetResMsg(utils.Success))
+	return sz.BuildResponse(200, sz.BuildUserResponse(&user), sz.GetResMsg(sz.Success))
 }

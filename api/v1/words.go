@@ -3,9 +3,8 @@ package v1
 import (
 	"net/http"
 
-	"acgfate/serializer"
+	sz "acgfate/serializer"
 	"acgfate/services/words"
-	"acgfate/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +24,7 @@ func WordsPost(c *gin.Context) {
 		res := form.Post(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, serializer.ErrorResponse(utils.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
 	}
 }
 
@@ -44,6 +43,6 @@ func WordsGet(c *gin.Context) {
 		res := form.Get(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, serializer.ErrorResponse(utils.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
 	}
 }

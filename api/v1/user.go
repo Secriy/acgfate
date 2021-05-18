@@ -3,9 +3,8 @@ package v1
 import (
 	"net/http"
 
-	"acgfate/serializer"
+	sz "acgfate/serializer"
 	"acgfate/services/user"
-	"acgfate/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +24,7 @@ func UserRegister(c *gin.Context) {
 		res := form.Register()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, serializer.ErrorResponse(utils.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
 	}
 }
 
@@ -45,7 +44,7 @@ func UserLogin(c *gin.Context) {
 		res := form.Login()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, serializer.ErrorResponse(utils.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
 	}
 }
 
@@ -64,7 +63,7 @@ func UserMe(c *gin.Context) {
 		res := form.Me(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, serializer.ErrorResponse(utils.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
 	}
 }
 
@@ -85,6 +84,6 @@ func UpdateService(c *gin.Context) {
 		res := form.Update(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, serializer.ErrorResponse(utils.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
 	}
 }
