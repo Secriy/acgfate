@@ -28,6 +28,13 @@ func (service RegisterService) Register() sz.Response {
 	if err := model.DB.Where("username = ?", service.Username).First(&userInfo).Error; err == nil {
 		return sz.ErrorResponse(sz.AccCreateErr, "用户名已被他人使用")
 	}
+	// 加密密码
+	if err := userInfo.SetPassword(service.Password); err != nil {
+		return sz.ErrorResponse(
+			sz.CodeEncryptError,
+			"密码加密失败",
+		)
+	}
 	// 创建用户
 	if err := model.DB.Create(&userInfo).Error; err != nil {
 		return sz.ErrorResponse(sz.DatabaseErr, "创建用户失败")

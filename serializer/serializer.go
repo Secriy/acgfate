@@ -15,7 +15,8 @@ const (
 
 	WordsPostErr = 41001
 
-	DatabaseErr = 50002
+	DatabaseErr      = 50002
+	CodeEncryptError = 50006
 )
 
 var ResMsgFlags = map[int]string{
@@ -24,18 +25,19 @@ var ResMsgFlags = map[int]string{
 	WordsPostErr: "发布失败",
 }
 
+type Response struct {
+	Code int         `json:"code"`
+	Data interface{} `json:"data"`
+	Msg  string      `json:"msg"`
+}
+
+// GetResMsg 获取错误码对应错误信息
 func GetResMsg(code int) string {
 	msg, ok := ResMsgFlags[code]
 	if ok {
 		return msg
 	}
 	return ResMsgFlags[Error]
-}
-
-type Response struct {
-	Code int         `json:"code"`
-	Data interface{} `json:"data"`
-	Msg  string      `json:"msg"`
 }
 
 // BuildResponse 响应信息构建

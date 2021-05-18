@@ -14,12 +14,10 @@ type LoginService struct {
 // Login 用户登录服务
 func (service *LoginService) Login() sz.Response {
 	var user model.UserInfo
-	// 检查账号是否存在
-	if err := model.DB.Where("username = ?", service.Username).First(&user).Error; err != nil {
-		return sz.ErrorResponse(sz.AccAuthErr, "账号或密码错误")
-	}
-	// 检查密码是否正确
-	if !user.CheckPass(service.Password) {
+	// 检查账号是否存在 && 检查密码是否正确
+	if err := model.DB.Where("username = ?", service.Username).First(&user).Error; err != nil || !user.CheckPassword(
+		service.
+			Password) {
 		return sz.ErrorResponse(sz.AccAuthErr, "账号或密码错误")
 	}
 	// 生成用户Token

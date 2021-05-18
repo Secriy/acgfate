@@ -25,9 +25,6 @@ type UserResponse struct {
 	UserPoints UserPointsResponse `json:"user_points"`
 }
 
-type UserLevelResponse struct {
-}
-
 // BuildLoginResponse 登录信息返回构建
 func BuildLoginResponse(user *model.UserInfo, token string) LoginResponse {
 	return LoginResponse{
@@ -40,19 +37,15 @@ func BuildLoginResponse(user *model.UserInfo, token string) LoginResponse {
 // BuildUserResponse 用户信息返回构建
 func BuildUserResponse(user *model.User) UserResponse {
 	return UserResponse{
-		UID:      user.UserInfo.UID,
-		Username: user.Username,
-		Nickname: user.Nickname,
-		Mail:     user.Mail,
-		Avatar:   user.Avatar,
-		Gender:   model.GenderFlags[int(user.Gender)],
-		Birthday: user.Birthday,
-		JoinTime: user.JoinTime.Unix(),
-		Silence:  user.Silence,
-		UserPoints: UserPointsResponse{
-			EXP:   user.EXP,
-			Level: model.FormatLevel(user.EXP),
-			Coins: user.Coins,
-		},
+		UID:        user.UserInfo.UID,
+		Username:   user.Username,
+		Nickname:   user.Nickname,
+		Mail:       user.Mail,
+		Avatar:     user.Avatar,
+		Gender:     model.GenderFlags[int(user.Gender)],
+		Birthday:   user.Birthday,
+		JoinTime:   user.JoinTime.Unix(),
+		Silence:    user.Silence,
+		UserPoints: BuildUserPointsResponse(&user.UserPoints),
 	}
 }

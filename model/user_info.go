@@ -3,14 +3,19 @@ package model
 import (
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 const (
-	Private = iota + 1
-	Male
-	Female
-	Other
+	EncryptCost = 12 // 加密强度
+)
+
+const (
+	Private = iota + 1 // 性别: 保密
+	Male               // 性别: 男
+	Female             // 性别: 女
+	Other              // 性别: 其他
 )
 
 var GenderFlags = map[int]string{
@@ -44,13 +49,20 @@ type UserInfo struct {
 // type PremiumUser struct {
 // }
 
-// CheckPass 检查密码是否正确
-func (u *UserInfo) CheckPass(password string) bool {
-	if u.Password == password {
-		return true
+// SetPassword 设置密码
+func (info *UserInfo) SetPassword(password string) error {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), EncryptCost)
+	if err != nil {
+		return err
 	}
+	info.Password = string(bytes)
+	return nil
+}
 
-	return false
+// CheckPassword 校验密码
+func (info *UserInfo) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(info.Password), []byte(password))
+	return err == nil
 }
 
 // GetUser 获取当前用户模型
