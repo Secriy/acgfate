@@ -25,5 +25,10 @@ func (service *PostService) Post(c *gin.Context) sz.Response {
 		return sz.ErrorResponse(sz.WordsPostErr, sz.GetResMsg(sz.WordsPostErr))
 	}
 
-	return sz.BuildResponse(sz.Success, sz.BuildWordsResponse(&words, user.Nickname), "发表成功")
+	return sz.BuildResponse(
+		sz.Success,
+		sz.BuildWordsResponse(&words, user.Nickname),
+		"发表成功",
+		nil,
+	)
 }

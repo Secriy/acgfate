@@ -18,7 +18,7 @@ func (service *LoginService) Login() sz.Response {
 	if err := model.DB.Where("username = ?", service.Username).First(&user).Error; err != nil || !user.CheckPassword(
 		service.
 			Password) {
-		return sz.ErrorResponse(sz.AccAuthErr, "账号或密码错误")
+		return sz.ErrorResponse(sz.Failure, "账号或密码错误")
 	}
 	// 生成用户Token
 	token, err := utils.GenToken(user.UID)
@@ -26,5 +26,10 @@ func (service *LoginService) Login() sz.Response {
 		return sz.ErrorResponse(sz.Error, "生成token失败")
 	}
 
-	return sz.BuildResponse(sz.Success, sz.BuildLoginResponse(&user, token), "登录成功")
+	return sz.BuildResponse(
+		sz.Success,
+		sz.BuildLoginResponse(&user, token),
+		"登录成功",
+		nil,
+	)
 }

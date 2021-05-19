@@ -26,6 +26,10 @@ func (service *UpdateService) Update(c *gin.Context) sz.Response {
 		Birthday: service.Birthday,
 	})
 
-	return sz.BuildResponse(sz.Success, sz.BuildUserResponse(&user),
-		sz.GetResMsg(sz.Success))
+	return sz.BuildResponse(
+		sz.Success,
+		sz.BuildUserResponse(&user),
+		sz.GetResMsg(sz.Success),
+		nil,
+	)
 }

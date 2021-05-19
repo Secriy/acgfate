@@ -24,8 +24,7 @@ func UserRegister(c *gin.Context) {
 		res := form.Register()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ErrorResponse(
-			sz.ParamErr, sz.GetResMsg(sz.ParamErr), err))
+		c.JSON(http.StatusOK, sz.ParmErr("", err))
 	}
 }
 
@@ -45,8 +44,7 @@ func UserLogin(c *gin.Context) {
 		res := form.Login()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ErrorResponse(
-			sz.ParamErr, sz.GetResMsg(sz.ParamErr), err))
+		c.JSON(http.StatusOK, sz.ParmErr("", err))
 	}
 }
 
@@ -57,17 +55,12 @@ func UserLogin(c *gin.Context) {
 // @Produce  application/json
 // @Param Authorization header string true "用户令牌"
 // @Success 0 {object} serializer.UserResponse "msg: Success"
-// @Failure 50001 {object} serializer.Response "msg: 查询个人信息错误"
+// @Failure 50000 {object} serializer.Response "msg: 查询个人信息错误"
 // @Router /user/me [get]
 func UserMe(c *gin.Context) {
 	var form user.MeService
-	if err := c.ShouldBind(&form); err == nil {
-		res := form.Me(c)
-		c.JSON(http.StatusOK, res)
-	} else {
-		c.JSON(http.StatusOK, sz.ErrorResponse(
-			sz.ParamErr, sz.GetResMsg(sz.ParamErr), err))
-	}
+	res := form.Me(c)
+	c.JSON(http.StatusOK, res)
 }
 
 // UserUpdate 用户信息更新
@@ -87,7 +80,6 @@ func UserUpdate(c *gin.Context) {
 		res := form.Update(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ErrorResponse(
-			sz.ParamErr, sz.GetResMsg(sz.ParamErr), err))
+		c.JSON(http.StatusOK, sz.ParmErr("", err))
 	}
 }

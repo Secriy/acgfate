@@ -19,5 +19,10 @@ func (service *GetService) Get(c *gin.Context) sz.Response {
 		return sz.ErrorResponse(sz.WordsPostErr, sz.GetResMsg(sz.WordsPostErr))
 	}
 
-	return sz.BuildResponse(sz.Success, sz.BuildWordsResponse(&words, user.Nickname), "成功")
+	return sz.BuildResponse(
+		sz.Success,
+		sz.BuildWordsResponse(&words, user.Nickname),
+		"成功",
+		nil,
+	)
 }

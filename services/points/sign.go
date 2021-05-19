@@ -23,7 +23,7 @@ func (service *SignService) DoSign(c *gin.Context) sz.Response {
 		return sz.ErrorResponse(sz.Error, "获取当前用户失败")
 	}
 	if fmt.Sprint(user.SignTime.Date()) == fmt.Sprint(time.Now().Date()) {
-		return sz.ErrorResponse(sz.SignErr, "今天已经签到过了")
+		return sz.ErrorResponse(sz.Failure, "今天已经签到过了")
 	}
 	// 更新用户点数
 	model.DB.Model(&user.UserPoints).Updates(model.UserPoints{
@@ -32,6 +32,10 @@ func (service *SignService) DoSign(c *gin.Context) sz.Response {
 		SignTime: time.Now(),
 	})
 
-	return sz.BuildResponse(sz.Success, sz.BuildUserPointsResponse(&user.UserPoints),
-		sz.GetResMsg(sz.Success))
+	return sz.BuildResponse(
+		sz.Success,
+		sz.BuildUserPointsResponse(&user.UserPoints),
+		sz.GetResMsg(sz.Success),
+		nil,
+	)
 }

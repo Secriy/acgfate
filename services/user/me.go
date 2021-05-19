@@ -25,6 +25,10 @@ func (service *MeService) Me(c *gin.Context) sz.Response {
 		UserPoints: userPoints,
 	}
 
-	return sz.BuildResponse(sz.Success, sz.BuildUserResponse(&user),
-		sz.GetResMsg(sz.Success))
+	return sz.BuildResponse(
+		sz.Success,
+		sz.BuildUserResponse(&user),
+		sz.GetResMsg(sz.Success),
+		nil,
+	)
 }
