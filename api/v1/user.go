@@ -24,7 +24,8 @@ func UserRegister(c *gin.Context) {
 		res := form.Register()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorResponse(
+			sz.ParamErr, sz.GetResMsg(sz.ParamErr), err))
 	}
 }
 
@@ -44,7 +45,8 @@ func UserLogin(c *gin.Context) {
 		res := form.Login()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorResponse(
+			sz.ParamErr, sz.GetResMsg(sz.ParamErr), err))
 	}
 }
 
@@ -63,7 +65,8 @@ func UserMe(c *gin.Context) {
 		res := form.Me(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorResponse(
+			sz.ParamErr, sz.GetResMsg(sz.ParamErr), err))
 	}
 }
 
@@ -84,6 +87,7 @@ func UserUpdate(c *gin.Context) {
 		res := form.Update(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ErrorMsg(sz.ParamErr, err))
+		c.JSON(http.StatusOK, sz.ErrorResponse(
+			sz.ParamErr, sz.GetResMsg(sz.ParamErr), err))
 	}
 }

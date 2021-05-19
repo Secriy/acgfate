@@ -22,6 +22,7 @@ const (
 var ResMsgFlags = map[int]string{
 	Success:      "Success",
 	Error:        "Fail",
+	ParamErr:     "参数错误",
 	WordsPostErr: "发布失败",
 }
 
@@ -29,6 +30,7 @@ type Response struct {
 	Code int         `json:"code"`
 	Data interface{} `json:"data"`
 	Msg  string      `json:"msg"`
+	Err  string      `json:"err"`
 }
 
 // GetResMsg 获取错误码对应错误信息
@@ -50,19 +52,11 @@ func BuildResponse(code int, data interface{}, msg string) Response {
 }
 
 // ErrorResponse 错误信息构建
-func ErrorResponse(code int, msg string) Response {
+func ErrorResponse(code int, msg string, err error) Response {
 	return Response{
 		Code: code,
 		Data: nil,
 		Msg:  msg,
-	}
-}
-
-// ErrorMsg 错误返回
-func ErrorMsg(code int, err error) Response {
-	return Response{
-		Code: code,
-		Data: nil,
-		Msg:  err.Error(),
+		Err:  err.Error(),
 	}
 }
