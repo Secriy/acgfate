@@ -24,6 +24,53 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/sign": {
+            "post": {
+                "description": "用户信息更新接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "用户信息更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "用户信息",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/points.SignService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: \"Success",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.UserPointsResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login": {
             "post": {
                 "description": "用户登录接口",
@@ -263,6 +310,9 @@ var doc = `{
         }
     },
     "definitions": {
+        "points.SignService": {
+            "type": "object"
+        },
         "serializer.LoginResponse": {
             "type": "object",
             "properties": {
@@ -300,7 +350,7 @@ var doc = `{
                 "coins": {
                     "type": "integer"
                 },
-                "points": {
+                "exp": {
                     "type": "integer"
                 },
                 "level": {
@@ -321,7 +371,7 @@ var doc = `{
                     "type": "string"
                 },
                 "join_time": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "mail": {
                     "type": "string"
@@ -350,13 +400,13 @@ var doc = `{
                     "type": "string"
                 },
                 "create_at": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "publisher": {
                     "type": "string"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "wid": {
                     "type": "integer"

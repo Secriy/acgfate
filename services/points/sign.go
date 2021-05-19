@@ -1,6 +1,7 @@
 package points
 
 import (
+	"fmt"
 	"time"
 
 	"acgfate/model"
@@ -21,7 +22,7 @@ func (service *SignService) DoSign(c *gin.Context) sz.Response {
 	if err != nil {
 		return sz.ErrorResponse(sz.Error, "获取当前用户失败")
 	}
-	if user.SignTime.Day() == time.Now().Day() {
+	if fmt.Sprint(user.SignTime.Date()) == fmt.Sprint(time.Now().Date()) {
 		return sz.ErrorResponse(sz.SignErr, "今天已经签到过了")
 	}
 	// 更新用户点数
@@ -31,6 +32,6 @@ func (service *SignService) DoSign(c *gin.Context) sz.Response {
 		SignTime: time.Now(),
 	})
 
-	return sz.BuildResponse(sz.Success, sz.BuildUserResponse(&user),
+	return sz.BuildResponse(sz.Success, sz.BuildUserPointsResponse(&user.UserPoints),
 		sz.GetResMsg(sz.Success))
 }

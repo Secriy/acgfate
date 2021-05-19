@@ -15,8 +15,8 @@ import (
 // @Accept application/json
 // @Produce  application/json
 // @Param Authorization header string true "用户令牌"
-// @Param form body user.SignService true "用户信息"
-// @Success 0 {object} serializer.UserResponse "msg: "Success"
+// @Param form body points.SignService true "用户信息"
+// @Success 0 {object} serializer.UserPointsResponse "msg: "Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /sign [post]
 func SignService(c *gin.Context) {
