@@ -20,4 +20,11 @@ func InitUserRouter(r *gin.RouterGroup) {
 		authGroup.GET("me", v1.UserMe)         // 获取个人信息
 		authGroup.PUT("update", v1.UserUpdate) // 更新个人信息
 	}
+
+	// 邮箱路由组
+	mailGroup := r.Group("mail").Use(middleware.JWTAuthRequired())
+	{
+		mailGroup.GET("verify", v1.MailSend)    // 发送验证码
+		mailGroup.POST("verify", v1.MailVerify) // 验证邮箱
+	}
 }

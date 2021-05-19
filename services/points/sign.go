@@ -20,10 +20,10 @@ type SignService struct{}
 func (service *SignService) DoSign(c *gin.Context) sz.Response {
 	user, err := model.GetUser(c.GetUint64("UID"))
 	if err != nil {
-		return sz.ErrorResponse(sz.Error, "获取当前用户失败")
+		return sz.Err(sz.Error, "获取当前用户失败")
 	}
 	if fmt.Sprint(user.SignTime.Date()) == fmt.Sprint(time.Now().Date()) {
-		return sz.ErrorResponse(sz.Failure, "今天已经签到过了")
+		return sz.Err(sz.Failure, "今天已经签到过了")
 	}
 	// 更新用户点数
 	model.DB.Model(&user.UserPoints).Updates(model.UserPoints{

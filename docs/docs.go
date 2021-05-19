@@ -24,9 +24,42 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/sign": {
+        "/mail/verify": {
+            "get": {
+                "description": "验证码邮件发送接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mail"
+                ],
+                "summary": "验证码邮件发送",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: \"Success",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.UserPointsResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            },
             "post": {
-                "description": "用户信息更新接口",
+                "description": "验证邮件发送接口",
                 "consumes": [
                     "application/json"
                 ],
@@ -34,9 +67,53 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "User"
+                    "Mail"
                 ],
-                "summary": "用户信息更新",
+                "summary": "验证邮件发送",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "验证码",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.MailVerifyService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: \"Success",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.UserPointsResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/sign": {
+            "post": {
+                "description": "普通签到接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Points"
+                ],
+                "summary": "普通签到",
                 "parameters": [
                     {
                         "type": "string",
@@ -62,7 +139,7 @@ var doc = `{
                             "$ref": "#/definitions/serializer.UserPointsResponse"
                         }
                     },
-                    "30001": {
+                    "60001": {
                         "description": "msg: 参数错误",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
@@ -137,7 +214,7 @@ var doc = `{
                             "$ref": "#/definitions/serializer.UserResponse"
                         }
                     },
-                    "50001": {
+                    "50000": {
                         "description": "msg: 查询个人信息错误",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
@@ -339,6 +416,9 @@ var doc = `{
                 "data": {
                     "type": "object"
                 },
+                "err": {
+                    "type": "string"
+                },
                 "msg": {
                     "type": "string"
                 }
@@ -390,6 +470,9 @@ var doc = `{
                 },
                 "username": {
                     "type": "string"
+                },
+                "verify": {
+                    "type": "boolean"
                 }
             }
         },
@@ -424,6 +507,14 @@ var doc = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.MailVerifyService": {
+            "type": "object",
+            "properties": {
+                "code": {
                     "type": "string"
                 }
             }

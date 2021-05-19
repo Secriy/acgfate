@@ -18,12 +18,12 @@ func (service *LoginService) Login() sz.Response {
 	if err := model.DB.Where("username = ?", service.Username).First(&user).Error; err != nil || !user.CheckPassword(
 		service.
 			Password) {
-		return sz.ErrorResponse(sz.Failure, "账号或密码错误")
+		return sz.Err(sz.Failure, "账号或密码错误")
 	}
 	// 生成用户Token
 	token, err := utils.GenToken(user.UID)
 	if err != nil {
-		return sz.ErrorResponse(sz.Error, "生成token失败")
+		return sz.Err(sz.Error, "生成token失败")
 	}
 
 	return sz.BuildResponse(

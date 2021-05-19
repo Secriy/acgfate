@@ -32,7 +32,36 @@ type Response struct {
 	Code int         `json:"code"`
 	Data interface{} `json:"data"`
 	Msg  string      `json:"msg"`
-	Err  interface{} `json:"err"`
+	Err  string      `json:"err"`
+}
+
+// BuildResponse 响应信息构建
+func BuildResponse(code int, data interface{}, msg string, err error) Response {
+	var errMsg string
+	if err == nil {
+		errMsg = ""
+	} else {
+		errMsg = err.Error()
+	}
+	return Response{
+		Code: code,
+		Data: data,
+		Msg:  msg,
+		Err:  errMsg,
+	}
+}
+
+// Err 通用错误信息
+func Err(code int, msg string) Response {
+	return BuildResponse(code, nil, msg, nil)
+}
+
+// ParmErr 参数错误信息
+func ParmErr(msg string, err error) Response {
+	if msg == "" {
+		msg = "参数错误"
+	}
+	return BuildResponse(ParamErr, nil, msg, err)
 }
 
 // GetResMsg 获取错误码对应错误信息
@@ -42,30 +71,4 @@ func GetResMsg(code int) string {
 		return msg
 	}
 	return ResMsgFlags[Error]
-}
-
-// BuildResponse 响应信息构建
-func BuildResponse(code int, data interface{}, msg string, err error) Response {
-	return Response{
-		Code: code,
-		Data: data,
-		Msg:  msg,
-		Err:  err,
-	}
-}
-
-// ErrorResponse 错误信息构建
-func ErrorResponse(code int, msg string) Response {
-	return Response{
-		Code: code,
-		Msg:  msg,
-	}
-}
-
-// ParmErr 参数错误信息
-func ParmErr(msg string, err string) Response {
-	if msg == "" {
-		msg = "参数错误"
-	}
-	return ErrorResponse(ParamErr, msg, err)
 }

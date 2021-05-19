@@ -11,7 +11,7 @@ func InitWordsRouter(r *gin.RouterGroup) {
 	{
 		pubGroup.GET(":wid", v1.WordsGet)
 	}
-	authGroup := pubGroup.Use(middleware.JWTAuthRequired(), middleware.CheckSilence())
+	authGroup := pubGroup.Use(middleware.JWTAuthRequired(), middleware.IsSilence(), middleware.IsMailVerify())
 	{
 		authGroup.POST("post", v1.WordsPost)
 	}

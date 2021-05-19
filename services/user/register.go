@@ -26,21 +26,21 @@ func (service RegisterService) Register() sz.Response {
 	}
 	// 判断用户名是否已经存在
 	if err := model.DB.Where("username = ?", service.Username).First(&userInfo).Error; err == nil {
-		return sz.ErrorResponse(sz.Failure, "用户名已被他人使用")
+		return sz.Err(sz.Failure, "用户名已被他人使用")
 	}
 	// 加密密码
 	if err := userInfo.SetPassword(service.Password); err != nil {
-		return sz.ErrorResponse(sz.CodeEncryptError, "密码加密失败")
+		return sz.Err(sz.CodeEncryptError, "密码加密失败")
 	}
 	// 创建用户
 	if err1, err2 := model.DB.Create(&userInfo).Error, model.DB.Create(&userPoints).Error; err1 != nil || err2 != nil {
-		return sz.ErrorResponse(sz.DatabaseErr, "创建用户失败")
+		return sz.Err(sz.DatabaseErr, "创建用户失败")
 	}
 	// 构建模型
 	user := model.User{UserInfo: userInfo, UserPoints: userPoints}
 
 	return sz.BuildResponse(
-		200,
+		sz.Success,
 		sz.BuildUserResponse(&user),
 		sz.GetResMsg(sz.Success),
 		nil,

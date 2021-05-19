@@ -17,6 +17,7 @@ type UserResponse struct {
 	Username   string             `json:"username"`
 	Nickname   string             `json:"nickname"`
 	Mail       string             `json:"mail"`
+	Verify     bool               `json:"verify"`
 	Avatar     string             `json:"avatar"`
 	Gender     string             `json:"gender"`
 	Birthday   string             `json:"birthday"`
@@ -41,6 +42,7 @@ func BuildUserResponse(user *model.User) UserResponse {
 		Username:   user.Username,
 		Nickname:   user.Nickname,
 		Mail:       user.Mail,
+		Verify:     user.MailVerify,
 		Avatar:     user.Avatar,
 		Gender:     model.GenderFlags[int(user.Gender)],
 		Birthday:   user.Birthday,

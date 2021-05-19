@@ -8,12 +8,23 @@ import (
 )
 
 type config struct {
-	DSN  string `mapstructure:"dsn"`
-	Mode string `mapstructure:"mode"`
-	JWT  struct {
+	DSN   string `mapstructure:"dsn"`
+	Mode  string `mapstructure:"mode"`
+	Redis struct {
+		Host     string `mapstructure:"host"`
+		Password string `mapstructure:"passwd"`
+		DB       string `mapstructure:"db"`
+	} `mapstructure:"redis"`
+	JWT struct {
 		Secret         string `mapstructure:"secret"`
 		ExpireDuration int    `mapstructure:"expire_duration"`
 	} `mapstructure:"jwt"`
+	Mail struct {
+		Smtp     string `mapstructure:"smtp"`
+		Port     int    `mapstructure:"port"`
+		Sender   string `mapstructure:"sender"`
+		Password string `mapstructure:"passwd"`
+	} `maostructure:"mail"`
 }
 
 var Conf config
