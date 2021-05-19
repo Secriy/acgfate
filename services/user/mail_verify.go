@@ -1,12 +1,16 @@
 package user
 
 import (
+	"context"
+	"strconv"
 	"time"
 
+	"acgfate/cache"
 	"acgfate/model"
 	sz "acgfate/serializer"
 	"acgfate/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 )
 
 type MailVerifyCodeService struct{}
@@ -15,16 +19,16 @@ type MailVerifyService struct {
 	Code string `json:"code" binding:"numeric,min=6,max=6"`
 }
 
-var (
-	verifyCode string
-	codeTime   int64
-)
-
 // SendCode 发送验证码
 func (service MailVerifyCodeService) SendCode(c *gin.Context) sz.Response {
+	ctx := context.Background()
 	// 生成验证码
-	verifyCode = utils.GenerateCode(6)
-	codeTime = time.Now().Unix()
+	verifyCode := utils.GenerateCode(6)
+	// 存储验证码
+	key := "MailVerifyCode:" + strconv.FormatUint(c.GetUint64("UID"), 10)
+	if err := cache.RDB.Set(ctx, key, verifyCode, 120*time.Second).Err(); err != nil {
+		return sz.Err(sz.Error, "存储验证码失败")
+	}
 	// 发送验证码
 	err := utils.SendVerificationCode("secriy@qq.com", verifyCode)
 	if err != nil {
@@ -41,23 +45,24 @@ func (service MailVerifyCodeService) SendCode(c *gin.Context) sz.Response {
 
 // Verify 验证验证码
 func (service MailVerifyService) Verify(c *gin.Context) sz.Response {
+	ctx := context.Background()
 	var userInfo model.UserInfo
 	// 绑定数据
 	if err := model.DB.First(&userInfo, c.GetUint64("UID")).Error; err != nil {
 		return sz.Err(sz.Error, "查询个人信息错误")
 	}
+	// 获取缓存中的验证码
+	key := "MailVerifyCode:" + strconv.FormatUint(c.GetUint64("UID"), 10)
+	val, err := cache.RDB.Get(ctx, key).Result()
 	// 判断是否发送验证码
-	if verifyCode == "" {
-		return sz.Err(sz.Failure, "未发送验证码")
-	}
-	// 判断验证码是否过期
-	if codeTime+120000 < time.Now().Unix() {
+	if err == redis.Nil {
 		return sz.Err(sz.Failure, "验证码已过期")
 	}
 	// 判断验证码是否正确
-	if verifyCode != service.Code {
+	if val != service.Code {
 		return sz.Err(sz.Failure, "验证码不正确")
 	}
+	cache.RDB.Del(ctx, key)
 	// 更新验证状态
 	model.DB.Model(&userInfo).Update("mail_verify", true)
 

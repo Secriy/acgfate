@@ -6,3 +6,8 @@
 - [viper]()
 - [validator]()
 - [jwt-go]()
+
+## TODO
+
+- 放弃使用GORM
+- 更新邮箱时更新验证状态

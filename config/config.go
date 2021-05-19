@@ -3,31 +3,32 @@ package config
 import (
 	"fmt"
 
+	"acgfate/cache"
 	"acgfate/model"
 	"github.com/spf13/viper"
 )
 
-type config struct {
-	DSN   string `mapstructure:"dsn"`
-	Mode  string `mapstructure:"mode"`
-	Redis struct {
-		Host     string `mapstructure:"host"`
-		Password string `mapstructure:"passwd"`
-		DB       string `mapstructure:"db"`
-	} `mapstructure:"redis"`
-	JWT struct {
-		Secret         string `mapstructure:"secret"`
-		ExpireDuration int    `mapstructure:"expire_duration"`
-	} `mapstructure:"jwt"`
-	Mail struct {
-		Smtp     string `mapstructure:"smtp"`
-		Port     int    `mapstructure:"port"`
-		Sender   string `mapstructure:"sender"`
-		Password string `mapstructure:"passwd"`
-	} `maostructure:"mail"`
+type JwtConf struct {
+	Secret         string `mapstructure:"secret"`
+	ExpireDuration int    `mapstructure:"expire_duration"`
 }
 
-var Conf config
+type MailConf struct {
+	Smtp     string `mapstructure:"smtp"`
+	Port     int    `mapstructure:"port"`
+	Sender   string `mapstructure:"sender"`
+	Password string `mapstructure:"passwd"`
+}
+
+type Config struct {
+	DSN   string          `mapstructure:"dsn"`
+	Mode  string          `mapstructure:"mode"`
+	Redis cache.RedisConf `mapstructure:"redis"`
+	JWT   JwtConf         `mapstructure:"jwt"`
+	Mail  MailConf        `maostructure:"mail"`
+}
+
+var Conf Config
 
 // ReadConfig is used to read configuration file
 func ReadConfig() {
@@ -47,4 +48,7 @@ func ReadConfig() {
 	}
 	// Initialize database
 	model.InitDatabase(Conf.DSN)
+
+	// Connect Redis
+	cache.InitRedisClient(Conf.Redis)
 }

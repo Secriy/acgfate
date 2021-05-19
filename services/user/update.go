@@ -19,11 +19,23 @@ func (service *UpdateService) Update(c *gin.Context) sz.Response {
 	if err != nil {
 		return sz.Err(sz.Error, "获取当前用户失败")
 	}
-	model.DB.Model(&user.UserInfo).Updates(model.UserInfo{
-		Nickname: service.Nickname,
-		Mail:     service.Mail,
-		Gender:   service.Gender,
-		Birthday: service.Birthday,
+	// 判断是否修改邮箱
+	var mailVerify bool
+	switch {
+	case user.MailVerify == false:
+		mailVerify = false
+	case user.Mail == service.Mail:
+		mailVerify = true
+	default:
+		mailVerify = false
+	}
+	// 更新数据
+	model.DB.Model(&user.UserInfo).Select("mail_verify").Updates(model.UserInfo{
+		Nickname:   service.Nickname,
+		Mail:       service.Mail,
+		MailVerify: mailVerify,
+		Gender:     service.Gender,
+		Birthday:   service.Birthday,
 	})
 
 	return sz.BuildResponse(
