@@ -1,19 +1,16 @@
 package serializer
 
 const (
-	Success = 0
-	Failure = -1
-	Error   = 50000
+	Success = 0     // 成功代码
+	Failure = -1    // 通用错误代码
+	Error   = 50000 // 服务端错误通用代码
 
-	ParamErr = 30001
-
-	AccErr       = 40000
-	AccAuthErr   = 40001
-	AccCreateErr = 40002
-	AccSilence   = 40009
-	AccNotVerify = 41009
-
-	SignErr = 60001
+	ParamErr       = 40011 // 参数错误
+	AccNotLegalErr = 40030 // 账号非法操作
+	AccAuthErr     = 40031 // 账号未登录
+	AccNotVerify   = 40032 // 账号邮箱未验证
+	AccBanErr      = 40032 // 账号被封禁
+	AccSilenceErr  = 40033 // 账号被禁言
 
 	WordsPostErr = 41001
 
@@ -22,8 +19,8 @@ const (
 )
 
 var ResMsgFlags = map[int]string{
-	Success:      "Success",
-	Error:        "Fail",
+	Success:      "成功",
+	Failure:      "失败",
 	ParamErr:     "参数错误",
 	WordsPostErr: "发布失败",
 }
@@ -32,36 +29,25 @@ type Response struct {
 	Code int         `json:"code"`
 	Data interface{} `json:"data"`
 	Msg  string      `json:"msg"`
-	Err  string      `json:"err"`
 }
 
 // BuildResponse 响应信息构建
-func BuildResponse(code int, data interface{}, msg string, err error) Response {
-	var errMsg string
-	if err == nil {
-		errMsg = ""
-	} else {
-		errMsg = err.Error()
-	}
+func BuildResponse(code int, data interface{}, msg string) Response {
 	return Response{
 		Code: code,
 		Data: data,
 		Msg:  msg,
-		Err:  errMsg,
 	}
 }
 
-// Err 通用错误信息
-func Err(code int, msg string) Response {
-	return BuildResponse(code, nil, msg, nil)
+// ErrResponse 通用错误信息
+func ErrResponse(code int, msg string) Response {
+	return BuildResponse(code, nil, msg)
 }
 
 // ParmErr 参数错误信息
-func ParmErr(msg string, err error) Response {
-	if msg == "" {
-		msg = "参数错误"
-	}
-	return BuildResponse(ParamErr, nil, msg, err)
+func ParmErr() Response {
+	return BuildResponse(ParamErr, nil, "参数错误")
 }
 
 // GetResMsg 获取错误码对应错误信息

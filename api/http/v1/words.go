@@ -24,7 +24,7 @@ func WordsPost(c *gin.Context) {
 		res := form.Post(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ParmErr("", err))
+		c.JSON(http.StatusOK, sz.ParmErr())
 	}
 }
 
@@ -43,6 +43,6 @@ func WordsGet(c *gin.Context) {
 		res := form.Get(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ParmErr("", err))
+		c.JSON(http.StatusOK, sz.ParmErr())
 	}
 }

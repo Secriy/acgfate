@@ -6,6 +6,7 @@
 - [viper]()
 - [validator]()
 - [jwt-go]()
+- [zap]()
 
 ## TODO
 

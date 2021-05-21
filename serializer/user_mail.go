@@ -8,13 +8,14 @@ type MailResponse struct {
 	Verify string `json:"verify"` // 验证
 }
 
-func BuildMailResponse(user *model.UserInfo) MailResponse {
+// BuildMailResponse 构建邮箱返回信息
+func BuildMailResponse(userInfo *model.UserInfo) MailResponse {
 	isVerify := map[bool]string{
 		true:  "已验证",
 		false: "未验证",
 	}
 	return MailResponse{
-		Mail:   user.Mail,
-		Verify: isVerify[user.MailVerify],
+		Mail:   userInfo.Mail,
+		Verify: isVerify[userInfo.MailVerified],
 	}
 }

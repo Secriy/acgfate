@@ -40,6 +40,6 @@ func MailVerify(c *gin.Context) {
 		res := form.Verify(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ParmErr("", err))
+		c.JSON(http.StatusOK, sz.ParmErr())
 	}
 }

@@ -1,6 +1,8 @@
 package user
 
 import (
+	"fmt"
+
 	"acgfate/model"
 	sz "acgfate/serializer"
 	"github.com/gin-gonic/gin"
@@ -10,25 +12,21 @@ type MeService struct{}
 
 // Me 用户信息查询服务
 func (service *MeService) Me(c *gin.Context) sz.Response {
-	var userInfo model.UserInfo
-	var userPoints model.UserPoints
+	uid := c.GetUint64("UID") // 当前用户UID
 	// 绑定数据
-	if err := model.DB.First(&userInfo, c.GetUint64("UID")).Error; err != nil {
-		return sz.Err(sz.Error, "查询个人信息错误")
+	userInfo, err := model.GetUserInfo(uid)
+	if err != nil {
+		return sz.ErrResponse(sz.Error, "查询个人信息错误")
 	}
-	if err := model.DB.First(&userPoints, c.GetUint64("UID")).Error; err != nil {
-		return sz.Err(sz.Error, "查询个人信息错误")
+	userPoints, err := model.GetUserPoint(uid)
+	if err != nil {
+		fmt.Println(err.Error())
+		return sz.ErrResponse(sz.Error, "查询个人信息错误b")
 	}
 	// 构建模型
-	user := model.User{
-		UserInfo:   userInfo,
-		UserPoints: userPoints,
-	}
-
 	return sz.BuildResponse(
 		sz.Success,
-		sz.BuildUserResponse(&user),
+		sz.BuildUserResponse(&userInfo, &userPoints),
 		sz.GetResMsg(sz.Success),
-		nil,
 	)
 }

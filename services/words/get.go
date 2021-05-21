@@ -9,20 +9,19 @@ import (
 type GetService struct{}
 
 func (service *GetService) Get(c *gin.Context) sz.Response {
-	var words model.Words
-	if err := model.DB.First(&words, c.Param("wid")).Error; err != nil {
-		return sz.Err(sz.Error, "获取文字错误")
+	words, err := model.GetWordsByWID(c.Param("wid"))
+	if err != nil {
+		return sz.ErrResponse(sz.Error, "获取文字错误")
 	}
 	// 获取发布者昵称
-	user, err := model.GetUser(words.Publisher)
+	user, err := model.GetUserInfo(words.Publisher)
 	if err != nil {
-		return sz.Err(sz.Error, "获取发布者信息错误")
+		return sz.ErrResponse(sz.Error, "获取发布者信息错误")
 	}
 
 	return sz.BuildResponse(
 		sz.Success,
 		sz.BuildWordsResponse(&words, user.Nickname),
 		"成功",
-		nil,
 	)
 }

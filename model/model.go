@@ -2,35 +2,25 @@ package model
 
 import (
 	"fmt"
-	"time"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"acgfate/config"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
-var DB *gorm.DB
+var DB *sqlx.DB
 
-func InitDatabase(dsn string) {
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+// InitDatabase 初始化数据库连接
+func InitDatabase() {
+	dsn := config.Conf.DSN
+	mysqlDB, err := sqlx.Open("mysql", dsn)
 	if err != nil {
-		panic(fmt.Errorf("Error open database %v\n", err))
+		panic(fmt.Sprintf("Disabling MySQL tests:\n    %v", err))
 	}
+	mysqlDB.SetMaxOpenConns(200)
+	mysqlDB.SetMaxIdleConns(10)
 
-	// 设置连接池
-	// 空闲
-	sqlDB, _ := db.DB()
-	sqlDB.SetMaxIdleConns(50)
-	// 打开
-	sqlDB.SetMaxOpenConns(100)
-	// 超时
-	sqlDB.SetConnMaxLifetime(time.Second * 30)
+	DB = mysqlDB
 
-	DB = db
-
-	migration()
-}
-
-func migration() {
-	_ = DB.AutoMigrate(&UserInfo{}, &UserPoints{})
-	_ = DB.AutoMigrate(&Words{})
+	Create() // 创建表
 }

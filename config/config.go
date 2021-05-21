@@ -3,10 +3,14 @@ package config
 import (
 	"fmt"
 
-	"acgfate/cache"
-	"acgfate/model"
 	"github.com/spf13/viper"
 )
+
+type RedisConf struct {
+	Host     string `mapstructure:"host"`
+	Password string `mapstructure:"passwd"`
+	DB       int    `mapstructure:"db"`
+}
 
 type JwtConf struct {
 	Secret         string `mapstructure:"secret"`
@@ -21,11 +25,11 @@ type MailConf struct {
 }
 
 type Config struct {
-	DSN   string          `mapstructure:"dsn"`
-	Mode  string          `mapstructure:"mode"`
-	Redis cache.RedisConf `mapstructure:"redis"`
-	JWT   JwtConf         `mapstructure:"jwt"`
-	Mail  MailConf        `maostructure:"mail"`
+	DSN   string    `mapstructure:"dsn"`
+	Mode  string    `mapstructure:"mode"`
+	Redis RedisConf `mapstructure:"redis"`
+	JWT   JwtConf   `mapstructure:"jwt"`
+	Mail  MailConf  `maostructure:"mail"`
 }
 
 var Conf Config
@@ -46,9 +50,4 @@ func ReadConfig() {
 	if err != nil {
 		panic(fmt.Errorf("Fatal error unmarshal configration file: %s \n", err))
 	}
-	// Initialize database
-	model.InitDatabase(Conf.DSN)
-
-	// Connect Redis
-	cache.InitRedisClient(Conf.Redis)
 }

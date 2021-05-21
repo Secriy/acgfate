@@ -1,6 +1,8 @@
 package user
 
 import (
+	"fmt"
+
 	"acgfate/model"
 	sz "acgfate/serializer"
 	"github.com/gin-gonic/gin"
@@ -15,33 +17,29 @@ type UpdateService struct {
 
 // Update 用户信息更新服务
 func (service *UpdateService) Update(c *gin.Context) sz.Response {
-	user, err := model.GetUser(c.GetUint64("UID"))
+	userInfo, err := model.GetUserInfo(c.GetUint64("UID"))
 	if err != nil {
-		return sz.Err(sz.Error, "获取当前用户失败")
+		return sz.ErrResponse(sz.Error, "获取当前用户失败")
 	}
 	// 判断是否修改邮箱
 	var mailVerify bool
 	switch {
-	case user.MailVerify == false:
+	case userInfo.MailVerified == false:
 		mailVerify = false
-	case user.Mail == service.Mail:
+	case userInfo.Mail == service.Mail:
 		mailVerify = true
 	default:
 		mailVerify = false
 	}
 	// 更新数据
-	model.DB.Model(&user.UserInfo).Select("mail_verify").Updates(model.UserInfo{
-		Nickname:   service.Nickname,
-		Mail:       service.Mail,
-		MailVerify: mailVerify,
-		Gender:     service.Gender,
-		Birthday:   service.Birthday,
-	})
-
+	sql := "UPDATE user_info SET nickname = ?, mail = ?, mail_verify = ?, gender = ?, birthday = ? where uid = ?"
+	_, err = model.DB.Exec(sql, service.Nickname, service.Mail, mailVerify, service.Gender, service.Birthday)
+	if err != nil {
+		fmt.Printf("update failed, err:%v\n", err)
+	}
 	return sz.BuildResponse(
 		sz.Success,
-		sz.BuildUserResponse(&user),
+		sz.BuildUserInfoResponse(&userInfo),
 		sz.GetResMsg(sz.Success),
-		nil,
 	)
 }

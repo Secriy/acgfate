@@ -1,12 +1,15 @@
 package model
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 const (
 	userLevelMax = 100
 )
 
-var userLevelMap = []int64{
+var userLevelMap = []uint16{
 	0,    // 0
 	10,   // 1
 	220,  // 2
@@ -20,14 +23,24 @@ var userLevelMap = []int64{
 }
 
 type UserPoints struct {
-	UID      uint64    `gorm:"primaryKey;unique;autoIncrement;comment:'用户ID'"`
-	EXP      int64     `gorm:"comment:'经验值';default:0"`
-	Coins    uint      `gorm:"comment:'点数';default:0"`
-	SignTime time.Time `gorm:"comment:'签到时间'"`
+	UID       uint64       `db:"uid"`
+	CreatedAt time.Time    `db:"created_at"`
+	UpdatedAt time.Time    `db:"updated_at"`
+	IsDeleted bool         `db:"is_deleted"`
+	EXP       uint16       `db:"exp"`
+	Coins     uint64       `db:"coins"`
+	SignTime  sql.NullTime `db:"sign_time"`
+}
+
+// GetUserPoint 获取当前用户点数模型
+func GetUserPoint(uid interface{}) (userPoints UserPoints, err error) {
+	infoStr := "SELECT * from user_point where uid = ?"
+	err = DB.Get(&userPoints, infoStr, uid)
+	return
 }
 
 // FormatLevel 获取用户等级
-func FormatLevel(exp int64) (level uint8) {
+func FormatLevel(exp uint16) (level uint8) {
 	for rLevel, v := range userLevelMap {
 		if exp < v {
 			level = uint8(rLevel) - 1

@@ -13,23 +13,25 @@ type LoginService struct {
 
 // Login 用户登录服务
 func (service *LoginService) Login() sz.Response {
-	var user model.UserInfo
+	var userInfo model.UserInfo
 	// 检查账号是否存在 && 检查密码是否正确
-	if err := model.DB.Where("username = ?", service.Username).First(&user).Error; err != nil || !user.CheckPassword(
-		service.
-			Password) {
-		return sz.Err(sz.Failure, "账号或密码错误")
+	sqlStr := "SELECT * FROM user_info where username = ?"
+	err := model.DB.Get(&userInfo, sqlStr, service.Username)
+	if err != nil {
+		return sz.ErrResponse(sz.Failure, "账号或密码错误")
+	}
+	if !userInfo.CheckPassword(service.Password) {
+		return sz.ErrResponse(sz.Failure, "账号或密码错误")
 	}
 	// 生成用户Token
-	token, err := utils.GenToken(user.UID)
+	token, err := utils.GenToken(userInfo.UID)
 	if err != nil {
-		return sz.Err(sz.Error, "生成token失败")
+		return sz.ErrResponse(sz.Error, "生成token失败")
 	}
 
 	return sz.BuildResponse(
 		sz.Success,
-		sz.BuildLoginResponse(&user, token),
+		sz.BuildLoginResponse(&userInfo, token),
 		"登录成功",
-		nil,
 	)
 }
