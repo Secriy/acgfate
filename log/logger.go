@@ -1,4 +1,4 @@
-package config
+package log
 
 import (
 	"os"
@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var SugarLogger *zap.SugaredLogger
+var Logger *zap.SugaredLogger
 
 func InitLogger() {
 	writeSyncer := getLogWriter()
@@ -15,7 +15,7 @@ func InitLogger() {
 	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
 
 	logger := zap.New(core, zap.AddCaller())
-	SugarLogger = logger.Sugar()
+	Logger = logger.Sugar()
 }
 
 func getEncoder() zapcore.Encoder {

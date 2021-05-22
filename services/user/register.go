@@ -2,9 +2,14 @@ package user
 
 import (
 	"fmt"
+	"time"
 
+	"acgfate/log"
 	"acgfate/model"
+	"acgfate/model/user"
 	sz "acgfate/serializer"
+	suser "acgfate/serializer/user"
+	_ "github.com/gin-gonic/gin"
 )
 
 type RegisterService struct {
@@ -15,51 +20,51 @@ type RegisterService struct {
 }
 
 // Register 用户注册服务
-func (service RegisterService) Register() sz.Response {
-	var userInfo = model.UserInfo{
-		Username: service.Username,
-		Password: service.Password,
-		Nickname: service.Nickname,
-		Mail:     service.Mail,
+func (service *RegisterService) Register() sz.Response {
+	var baseInfo user.BaseInfo
+	// 判断用户名是否被占用
+	if exist("username", service.Username) {
+		return sz.ErrResponse(sz.RegNameExist)
 	}
-	// 判断用户名是否已经存在
-	sqlStr := "SELECT * FROM user_info WHERE username = ?"
-	var user model.UserInfo
-	err := model.DB.Get(&user, sqlStr, service.Username)
-	if err == nil && !user.IsDeleted {
-		return sz.ErrResponse(sz.Failure, "用户名已被他人使用")
+	// 判断邮箱是否被占用
+	if exist("mail", service.Mail) {
+		return sz.ErrResponse(sz.EmailExist)
 	}
 	// 加密密码
-	if err = userInfo.SetPassword(service.Password); err != nil {
-		return sz.ErrResponse(sz.CodeEncryptError, "密码加密失败")
+	if err := baseInfo.SetPassword(service.Password); err != nil {
+		log.Logger.Errorf("%s: %s", sz.Msg(sz.PasswdEncryptErr), err)
+		return sz.ErrResponse(sz.PasswdEncryptErr)
 	}
 	// 创建用户信息记录
-	sqlInfoStr := "INSERT INTO user_info (username, password, nickname, mail) VALUES (?,?,?,?)"
-	rows, err := model.DB.Exec(sqlInfoStr, userInfo.Username, userInfo.Password, userInfo.Nickname, userInfo.Mail)
+	infoSQL := "INSERT INTO user_base_info (username, password, nickname, mail, join_time) VALUES (?,?,?,?,?)"
+	rows, err := model.DB.Exec(infoSQL, service.Username, baseInfo.Password, service.Nickname, service.Mail, time.Now())
 	if err != nil {
-		return sz.ErrResponse(sz.DatabaseErr, "创建用户失败")
+		log.Logger.Errorf("创建用户失败: %s", err)
+		return sz.MsgResponse(sz.InsertDBErr, "创建用户失败")
 	}
-	// 创建用户点数记录
-	sqlPointStr := "INSERT INTO user_point (exp, coins) VALUES (DEFAULT, DEFAULT)"
-	_, err = model.DB.Exec(sqlPointStr)
+	uid, _ := rows.LastInsertId()
+	baseInfo, err = user.GetUserInfoByID(uid)
 	if err != nil {
-		return sz.ErrResponse(sz.DatabaseErr, "创建用户失败")
-	}
-	// 获取刚刚创建用户的ID
-	uid, err := rows.LastInsertId()
-	if err != nil {
-		return sz.ErrResponse(sz.DatabaseErr, "获取用户ID错误")
-	}
-	fmt.Println(uid)
-	// 构建模型
-	info, err := model.GetUserInfo(uid)
-	if err != nil {
-		return sz.ErrResponse(sz.Failure, "创建模型失败")
+		log.Logger.Errorf("创建用户失败: %s", err)
+		return sz.MsgResponse(sz.InsertDBErr, "创建用户失败")
 	}
 
 	return sz.BuildResponse(
 		sz.Success,
-		sz.BuildUserInfoResponse(&info),
-		sz.GetResMsg(sz.Success),
+		suser.BuildBaseInfoResponse(&baseInfo),
+		sz.Msg(sz.Success),
 	)
+}
+
+// 判断是否存在字段
+func exist(column string, arg string) bool {
+	var count int
+	row := model.DB.QueryRow(fmt.Sprintf(
+		"SELECT 1 FROM user_base_info WHERE %s = ? LIMIT 1", column), arg)
+	if _ = row.Scan(&count); count > 0 {
+		msg := sz.Msg(sz.RegNameExist)
+		log.Logger.Infof("%s: %s", msg, arg)
+		return true
+	}
+	return false
 }

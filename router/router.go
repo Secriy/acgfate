@@ -1,7 +1,7 @@
 package router
 
 import (
-	config "acgfate/config"
+	"acgfate/config"
 	_ "acgfate/docs"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -21,9 +21,9 @@ func InitRouter() *gin.Engine {
 	// Router Group
 	rGroup := r.Group("/api/v1")
 
-	InitUserRouter(rGroup)
-	InitWordsRouter(rGroup)
-	InitPointsRouter(rGroup)
+	InitUserRouter(rGroup) // 初始化UserInfo路由
+	// InitPointsRouter(rGroup) // 初始化UserPoints路由
+	// InitWordsRouter(rGroup)  // 初始化Words路由
 
 	return r
 }

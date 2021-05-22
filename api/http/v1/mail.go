@@ -14,12 +14,12 @@ import (
 // @Tags Mail
 // @Produce  application/json
 // @Param Authorization header string true "用户令牌"
-// @Success 0 {object} serializer.UserPointsResponse "msg: "Success"
+// @Success 0 {object} serializer.Response "msg: "Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /mail/verify [get]
 func MailSend(c *gin.Context) {
-	var form user.MailVerifyCodeService
-	res := form.SendCode(c)
+	var form user.MailSendService
+	res := form.Send(c)
 	c.JSON(http.StatusOK, res)
 }
 
@@ -31,7 +31,7 @@ func MailSend(c *gin.Context) {
 // @Produce  application/json
 // @Param Authorization header string true "用户令牌"
 // @Param form body user.MailVerifyService true "验证码"
-// @Success 0 {object} serializer.UserPointsResponse "msg: "Success"
+// @Success 0 {object} serializer.Response "msg: "Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /mail/verify [post]
 func MailVerify(c *gin.Context) {

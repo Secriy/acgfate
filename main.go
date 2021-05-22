@@ -5,6 +5,7 @@ import (
 
 	"acgfate/cache"
 	"acgfate/config"
+	"acgfate/log"
 	"acgfate/model"
 	"acgfate/router"
 )
@@ -16,7 +17,7 @@ import (
 // @BasePath /api/v1
 func main() {
 	//
-	config.InitLogger()
+	log.InitLogger()
 	// Read config file
 	config.ReadConfig()
 	// Initialize database

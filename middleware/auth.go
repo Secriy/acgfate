@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"acgfate/config"
-	sz "acgfate/serializer"
+	"acgfate/log"
+	"acgfate/serializer"
 	"acgfate/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -17,10 +17,10 @@ func JWTAuthRequired() gin.HandlerFunc {
 		if authStr == "" {
 			msg := "请求头Authorization为空"
 			c.JSON(http.StatusOK, gin.H{
-				"code": sz.AccAuthErr,
-				"msg":  msg,
+				"error": serializer.AccAuthErr,
+				"msg":   msg,
 			})
-			config.SugarLogger.Info(msg) // log
+			log.Logger.Info(msg) // log
 			c.Abort()
 			return
 		}
@@ -29,10 +29,10 @@ func JWTAuthRequired() gin.HandlerFunc {
 		if len(strParts) != 2 || strParts[0] != "Bearer" {
 			msg := "请求头Authorization格式错误"
 			c.JSON(http.StatusOK, gin.H{
-				"code": sz.AccAuthErr,
-				"msg":  msg,
+				"error": serializer.AccAuthErr,
+				"msg":   msg,
 			})
-			config.SugarLogger.Info(msg) // log
+			log.Logger.Info(msg) // log
 			c.Abort()
 			return
 		}
@@ -41,14 +41,15 @@ func JWTAuthRequired() gin.HandlerFunc {
 		if err != nil {
 			msg := "Token无效"
 			c.JSON(http.StatusOK, gin.H{
-				"code": sz.AccAuthErr,
-				"msg":  msg,
+				"error": serializer.AccAuthErr,
+				"msg":   msg,
 			})
-			config.SugarLogger.Info(msg) // log
+			log.Logger.Info(msg) // log
 			c.Abort()
 			return
 		}
-		// 保存UID到上下文
+
+		// 保存当前用户信息到上下文
 		c.Set("UID", res.UID)
 		c.Next()
 	}

@@ -24,7 +24,7 @@ func UserRegister(c *gin.Context) {
 		res := form.Register()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ParmErr())
+		c.JSON(http.StatusOK, err.Error())
 	}
 }
 
@@ -59,7 +59,7 @@ func UserLogin(c *gin.Context) {
 // @Router /user/me [get]
 func UserMe(c *gin.Context) {
 	var form user.MeService
-	res := form.Me(c)
+	res := form.Info(c)
 	c.JSON(http.StatusOK, res)
 }
 
