@@ -16,7 +16,7 @@ type RegisterService struct {
 	Username string `json:"username" binding:"required,alphanum,min=2,max=10"`
 	Password string `json:"password" binding:"required,ascii,min=8,max=16"`
 	Nickname string `json:"nickname" binding:"required,min=2,max=15"`
-	Mail     string `json:"mail" binding:"required,email"`
+	Email    string `json:"email" binding:"required,email"`
 }
 
 // Register 用户注册服务
@@ -27,7 +27,7 @@ func (service *RegisterService) Register() sz.Response {
 		return sz.ErrResponse(sz.RegNameExist)
 	}
 	// 判断邮箱是否被占用
-	if exist("mail", service.Mail) {
+	if exist("email", service.Email) {
 		return sz.ErrResponse(sz.EmailExist)
 	}
 	// 加密密码
@@ -36,8 +36,8 @@ func (service *RegisterService) Register() sz.Response {
 		return sz.ErrResponse(sz.PasswdEncryptErr)
 	}
 	// 创建用户信息记录
-	infoSQL := "INSERT INTO user_base_info (username, password, nickname, mail, join_time) VALUES (?,?,?,?,?)"
-	rows, err := model.DB.Exec(infoSQL, service.Username, baseInfo.Password, service.Nickname, service.Mail, time.Now())
+	infoSQL := "INSERT INTO user_base_info (username, password, nickname, email, join_time) VALUES (?,?,?,?,?)"
+	rows, err := model.DB.Exec(infoSQL, service.Username, baseInfo.Password, service.Nickname, service.Email, time.Now())
 	if err != nil {
 		log.Logger.Errorf("创建用户失败: %s", err)
 		return sz.MsgResponse(sz.InsertDBErr, "创建用户失败")

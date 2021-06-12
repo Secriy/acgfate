@@ -13,7 +13,7 @@ const (
 	// 4002x 账号注册时错误
 
 	RegNameExist        errCode = 40021 // 用户名被占用
-	EmailExist          errCode = 40022
+	EmailExist          errCode = 40022 // 邮箱被占用
 	VerifyCodeExpired   errCode = 40023 // 邮箱验证码已过期
 	VerifyCodeIncorrect errCode = 40024 // 验证码不正确
 	AccNotLegalErr      errCode = 40030 // 账号非法操作

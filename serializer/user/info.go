@@ -8,19 +8,21 @@ import (
 
 // BaseInfoResponse 用户信息结构
 type BaseInfoResponse struct {
-	UID          uint64 `json:"uid"`
-	Username     string `json:"username"`
-	Nickname     string `json:"nickname"`
-	Mail         string `json:"mail"`
-	MailVerified bool   `json:"mail_verify"`
-	JoinTime     string `json:"join_time"`
-	AccountState string `json:"account_state"`
-	Sign         string `json:"sign"`
-	Gender       string `json:"gender"`
-	Credit       uint32 `json:"credit"`
-	Birthday     string `json:"birthday"`
-	Province     string `json:"province"`
-	City         string `json:"city"`
+	UID           uint64 `json:"uid"`
+	Username      string `json:"username"`
+	Nickname      string `json:"nickname"`
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verify"`
+	JoinTime      string `json:"join_time"`
+	AccountState  string `json:"account_state"`
+	Level         int    `json:"level"`
+	Exp           int    `json:"exp"`
+	Sign          string `json:"sign"`
+	Gender        string `json:"gender"`
+	Credit        uint32 `json:"credit"`
+	Birthday      string `json:"birthday"`
+	Province      string `json:"province"`
+	City          string `json:"city"`
 }
 
 // BuildBaseInfoResponse 构建用户信息响应
@@ -29,19 +31,21 @@ func BuildBaseInfoResponse(info *user.BaseInfo) BaseInfoResponse {
 	accountStateStr := stateName(info.AccountState)
 	genderStr := genderName(info.Gender)
 	return BaseInfoResponse{
-		UID:          info.UID,
-		Username:     info.Username,
-		Nickname:     info.Nickname,
-		Mail:         info.Mail,
-		MailVerified: info.MailVerified,
-		JoinTime:     joinTimeStr,
-		AccountState: accountStateStr,
-		Sign:         info.Sign,
-		Gender:       genderStr,
-		Credit:       info.Credit,
-		Birthday:     info.Birthday.Format("2006-01-02"),
-		Province:     info.Province,
-		City:         info.City,
+		UID:           info.UID,
+		Username:      info.Username,
+		Nickname:      info.Nickname,
+		Email:         info.Email,
+		EmailVerified: info.EmailVerified,
+		JoinTime:      joinTimeStr,
+		AccountState:  accountStateStr,
+		Level:         user.GetLevelByExp(info.Exp),
+		Exp:           info.Exp,
+		Sign:          info.Sign,
+		Gender:        genderStr,
+		Credit:        info.Credit,
+		Birthday:      info.Birthday.Format("2006-01-02"),
+		Province:      info.Province,
+		City:          info.City,
 	}
 }
 

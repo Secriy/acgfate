@@ -13,7 +13,7 @@ import (
 
 type UpdateService struct {
 	Nickname string `json:"nickname" binding:"omitempty,min=2,max=15"`
-	Mail     string `json:"mail" binding:"omitempty,email"`
+	Email    string `json:"email" binding:"omitempty,email"`
 	Sign     string `json:"sign" binding:"omitempty,min=1,max=70"`
 	Gender   string `json:"gender" binding:"omitempty"` // 只能为 男、女、其他、保密
 	Birthday string `json:"birthday" binding:"omitempty"`
@@ -54,14 +54,14 @@ func (service *UpdateService) Update(c *gin.Context) sz.Response {
 		baseInfo.City = service.City
 	}
 	// 判断是否修改邮箱
-	if service.Mail != "" && baseInfo.Mail != service.Mail {
-		baseInfo.Mail = service.Mail
-		baseInfo.MailVerified = false
+	if service.Email != "" && baseInfo.Email != service.Email {
+		baseInfo.Email = service.Email
+		baseInfo.EmailVerified = false
 	}
 	// 更新数据
-	sqlStr := "UPDATE user_base_info SET nickname=?, mail=?, mail_verified=?, sign=?, gender=?, province=?, city=?, " +
+	sqlStr := "UPDATE user_base_info SET nickname=?, email=?, mail_verified=?, sign=?, gender=?, province=?, city=?, " +
 		"birthday=? where uid=?"
-	if _, err := model.DB.Exec(sqlStr, baseInfo.Nickname, baseInfo.Mail, baseInfo.MailVerified, baseInfo.Sign,
+	if _, err := model.DB.Exec(sqlStr, baseInfo.Nickname, baseInfo.Email, baseInfo.EmailVerified, baseInfo.Sign,
 		baseInfo.Gender, baseInfo.Province, baseInfo.City,
 		baseInfo.Birthday, baseInfo.UID); err != nil {
 		log.Logger.Errorf("更新用户信息失败: %s", err)

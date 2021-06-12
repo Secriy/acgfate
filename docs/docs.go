@@ -24,14 +24,14 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/mail/verify": {
+        "/email/verify": {
             "get": {
                 "description": "验证码邮件发送接口",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Mail"
+                    "Email"
                 ],
                 "summary": "验证码邮件发送",
                 "parameters": [
@@ -47,7 +47,7 @@ var doc = `{
                     "0": {
                         "description": "msg: \"Success",
                         "schema": {
-                            "$ref": "#/definitions/serializer.UserPointsResponse"
+                            "$ref": "#/definitions/serializer.Response"
                         }
                     },
                     "30001": {
@@ -67,7 +67,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Mail"
+                    "Email"
                 ],
                 "summary": "验证邮件发送",
                 "parameters": [
@@ -92,7 +92,7 @@ var doc = `{
                     "0": {
                         "description": "msg: \"Success",
                         "schema": {
-                            "$ref": "#/definitions/serializer.UserPointsResponse"
+                            "$ref": "#/definitions/serializer.Response"
                         }
                     },
                     "30001": {
@@ -111,7 +111,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Points"
+                    "Task"
                 ],
                 "summary": "普通签到",
                 "parameters": [
@@ -121,22 +121,13 @@ var doc = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
-                    },
-                    {
-                        "description": "用户信息",
-                        "name": "form",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/points.SignService"
-                        }
                     }
                 ],
                 "responses": {
                     "0": {
                         "description": "msg: \"Success",
                         "schema": {
-                            "$ref": "#/definitions/serializer.UserPointsResponse"
+                            "$ref": "#/definitions/user.BaseInfoResponse"
                         }
                     },
                     "60001": {
@@ -176,7 +167,7 @@ var doc = `{
                     "0": {
                         "description": "msg: Success",
                         "schema": {
-                            "$ref": "#/definitions/serializer.LoginResponse"
+                            "$ref": "#/definitions/user.LoginResponse"
                         }
                     },
                     "30001": {
@@ -211,7 +202,7 @@ var doc = `{
                     "0": {
                         "description": "msg: Success",
                         "schema": {
-                            "$ref": "#/definitions/serializer.UserResponse"
+                            "$ref": "#/definitions/user.BaseInfoResponse"
                         }
                     },
                     "50000": {
@@ -251,7 +242,7 @@ var doc = `{
                     "0": {
                         "description": "msg: Success",
                         "schema": {
-                            "$ref": "#/definitions/serializer.UserResponse"
+                            "$ref": "#/definitions/user.BaseInfoResponse"
                         }
                     },
                     "30001": {
@@ -264,7 +255,7 @@ var doc = `{
             }
         },
         "/user/update": {
-            "post": {
+            "put": {
                 "description": "用户信息更新接口",
                 "consumes": [
                     "application/json"
@@ -298,82 +289,7 @@ var doc = `{
                     "0": {
                         "description": "msg: \"Success",
                         "schema": {
-                            "$ref": "#/definitions/serializer.UserResponse"
-                        }
-                    },
-                    "30001": {
-                        "description": "msg: 参数错误",
-                        "schema": {
-                            "$ref": "#/definitions/serializer.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/words/:id": {
-            "get": {
-                "description": "文字查看接口",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Words"
-                ],
-                "summary": "文字查看",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Words ID",
-                        "name": "WID",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "0": {
-                        "description": "msg:\"获取成功",
-                        "schema": {
-                            "$ref": "#/definitions/serializer.WordsResponse"
-                        }
-                    },
-                    "30001": {
-                        "description": "msg: 参数错误",
-                        "schema": {
-                            "$ref": "#/definitions/serializer.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/words/post": {
-            "post": {
-                "description": "文字发表接口",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Words"
-                ],
-                "summary": "文字发表",
-                "parameters": [
-                    {
-                        "description": "文字发表信息",
-                        "name": "form",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/words.PostService"
-                        }
-                    }
-                ],
-                "responses": {
-                    "0": {
-                        "description": "msg:\"发表成功",
-                        "schema": {
-                            "$ref": "#/definitions/serializer.WordsResponse"
+                            "$ref": "#/definitions/user.BaseInfoResponse"
                         }
                     },
                     "30001": {
@@ -387,10 +303,71 @@ var doc = `{
         }
     },
     "definitions": {
-        "points.SignService": {
-            "type": "object"
+        "serializer.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "object"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
         },
-        "serializer.LoginResponse": {
+        "user.BaseInfoResponse": {
+            "type": "object",
+            "properties": {
+                "account_state": {
+                    "type": "string"
+                },
+                "birthday": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "credit": {
+                    "type": "integer"
+                },
+                "exp": {
+                    "type": "integer"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "join_time": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "email_verify": {
+                    "type": "boolean"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "province": {
+                    "type": "string"
+                },
+                "sign": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.LoginResponse": {
             "type": "object",
             "properties": {
                 "token": {
@@ -404,95 +381,6 @@ var doc = `{
                 "username": {
                     "description": "用户名",
                     "type": "string"
-                }
-            }
-        },
-        "serializer.Response": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "integer"
-                },
-                "data": {
-                    "type": "object"
-                },
-                "err": {
-                    "type": "string"
-                },
-                "msg": {
-                    "type": "string"
-                }
-            }
-        },
-        "serializer.UserPointsResponse": {
-            "type": "object",
-            "properties": {
-                "coins": {
-                    "type": "integer"
-                },
-                "exp": {
-                    "type": "integer"
-                },
-                "level": {
-                    "type": "integer"
-                }
-            }
-        },
-        "serializer.UserResponse": {
-            "type": "object",
-            "properties": {
-                "avatar": {
-                    "type": "string"
-                },
-                "birthday": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string"
-                },
-                "join_time": {
-                    "type": "integer"
-                },
-                "mail": {
-                    "type": "string"
-                },
-                "nickname": {
-                    "type": "string"
-                },
-                "silence": {
-                    "type": "boolean"
-                },
-                "uid": {
-                    "type": "integer"
-                },
-                "user_points": {
-                    "$ref": "#/definitions/serializer.UserPointsResponse"
-                },
-                "username": {
-                    "type": "string"
-                },
-                "verify": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "serializer.WordsResponse": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "create_at": {
-                    "type": "integer"
-                },
-                "publisher": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "integer"
-                },
-                "wid": {
-                    "type": "integer"
                 }
             }
         },
@@ -513,6 +401,9 @@ var doc = `{
         },
         "user.MailVerifyService": {
             "type": "object",
+            "required": [
+                "code"
+            ],
             "properties": {
                 "code": {
                     "type": "string"
@@ -522,13 +413,13 @@ var doc = `{
         "user.RegisterService": {
             "type": "object",
             "required": [
-                "mail",
+                "email",
                 "nickname",
                 "password",
                 "username"
             ],
             "properties": {
-                "mail": {
+                "email": {
                     "type": "string"
                 },
                 "nickname": {
@@ -548,24 +439,23 @@ var doc = `{
                 "birthday": {
                     "type": "string"
                 },
-                "gender": {
-                    "type": "integer"
+                "city": {
+                    "type": "string"
                 },
-                "mail": {
+                "gender": {
+                    "description": "只能为 男、女、其他、保密",
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 },
                 "nickname": {
                     "type": "string"
-                }
-            }
-        },
-        "words.PostService": {
-            "type": "object",
-            "required": [
-                "content"
-            ],
-            "properties": {
-                "content": {
+                },
+                "province": {
+                    "type": "string"
+                },
+                "sign": {
                     "type": "string"
                 }
             }

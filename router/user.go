@@ -22,7 +22,7 @@ func InitUserRouter(r *gin.RouterGroup) {
 	}
 
 	// 邮箱路由组
-	mailGroup := r.Group("mail").Use(middleware.JWTAuthRequired())
+	mailGroup := r.Group("email").Use(middleware.JWTAuthRequired())
 	{
 		mailGroup.GET("verify", v1.MailSend)    // 发送验证码
 		mailGroup.POST("verify", v1.MailVerify) // 验证邮箱

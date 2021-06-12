@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"acgfate/log"
-	"acgfate/serializer"
+	sz "acgfate/serializer"
 	"acgfate/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -17,8 +17,8 @@ func JWTAuthRequired() gin.HandlerFunc {
 		if authStr == "" {
 			msg := "请求头Authorization为空"
 			c.JSON(http.StatusOK, gin.H{
-				"error": serializer.AccAuthErr,
-				"msg":   msg,
+				"code": sz.AccAuthErr,
+				"msg":  msg,
 			})
 			log.Logger.Info(msg) // log
 			c.Abort()
@@ -29,8 +29,8 @@ func JWTAuthRequired() gin.HandlerFunc {
 		if len(strParts) != 2 || strParts[0] != "Bearer" {
 			msg := "请求头Authorization格式错误"
 			c.JSON(http.StatusOK, gin.H{
-				"error": serializer.AccAuthErr,
-				"msg":   msg,
+				"code": sz.AccAuthErr,
+				"msg":  msg,
 			})
 			log.Logger.Info(msg) // log
 			c.Abort()
@@ -41,8 +41,8 @@ func JWTAuthRequired() gin.HandlerFunc {
 		if err != nil {
 			msg := "Token无效"
 			c.JSON(http.StatusOK, gin.H{
-				"error": serializer.AccAuthErr,
-				"msg":   msg,
+				"code": sz.AccAuthErr,
+				"msg":  msg,
 			})
 			log.Logger.Info(msg) // log
 			c.Abort()

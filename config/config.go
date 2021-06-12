@@ -29,7 +29,7 @@ type Config struct {
 	Mode  string    `mapstructure:"mode"`
 	Redis RedisConf `mapstructure:"redis"`
 	JWT   JwtConf   `mapstructure:"jwt"`
-	Mail  MailConf  `maostructure:"mail"`
+	Email MailConf  `maostructure:"email"`
 }
 
 var Conf Config

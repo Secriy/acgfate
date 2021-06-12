@@ -33,20 +33,20 @@ func (service *MailSendService) Send(c *gin.Context) sz.Response {
 	// 生成验证码
 	verifyCode := utils.GenerateCode(6)
 	// 存储验证码
-	mail := baseInfo.Mail
-	key := fmt.Sprintf("MailVerifyCode:%s", mail)
+	email := baseInfo.Email
+	key := fmt.Sprintf("MailVerifyCode:%s", email)
 	if err := cache.RDB.Set(ctx, key, verifyCode, 120*time.Second).Err(); err != nil { // 超时时间120s
 		log.Logger.Errorf("%s: %s", sz.Msg(sz.CacheStoreErr), err)
 		return sz.ErrResponse(sz.Error)
 	}
 	// 发送验证码
-	err := utils.SendVerificationCode(mail, verifyCode)
+	err := utils.SendVerificationCode(email, verifyCode)
 	if err != nil {
 		log.Logger.Errorf("%s: %s", sz.Msg(sz.MailSendErr), err)
 		return sz.ErrResponse(sz.Error)
 	}
 
-	log.Logger.Infof("发送验证码成功: %s", mail)
+	log.Logger.Infof("发送验证码成功: %s", email)
 
 	return sz.SuccessResponse()
 }
@@ -61,16 +61,16 @@ func (service *MailVerifyService) Verify(c *gin.Context) sz.Response {
 		return sz.ErrResponse(sz.QueryDBErr)
 	}
 	// 获取缓存中的验证码
-	mail := baseInfo.Mail
-	key := fmt.Sprintf("MailVerifyCode:%s", mail)
+	email := baseInfo.Email
+	key := fmt.Sprintf("MailVerifyCode:%s", email)
 	val, err := cache.RDB.Get(ctx, key).Result()
 	// 判断是否发送验证码或过期
 	if err == redis.Nil {
 		return sz.ErrResponse(sz.VerifyCodeExpired)
 	}
 	// 判断验证码是否正确
+	k := fmt.Sprintf("InputCount:%s", email)
 	if val != service.Code {
-		k := fmt.Sprintf("InputCount:%s", mail)
 		if v, _ := cache.RDB.Get(ctx, k).Int(); v > 3 {
 			cache.RDB.Del(ctx, key) // 输错三次
 			cache.RDB.Del(ctx, k)
@@ -78,16 +78,17 @@ func (service *MailVerifyService) Verify(c *gin.Context) sz.Response {
 		cache.RDB.Incr(ctx, k) // 输错一次加1
 		return sz.ErrResponse(sz.VerifyCodeIncorrect)
 	}
+	cache.RDB.Del(ctx, k)
 	// 写数据库
 	uid := c.GetUint64("UID")
-	sqlStr := "UPDATE user_base_info SET mail_verified = ? where uid = ? AND mail = ?"
-	_, err = model.DB.Exec(sqlStr, true, uid, mail)
+	sqlStr := "UPDATE user_base_info SET mail_verified = ? where uid = ? AND email = ?"
+	_, err = model.DB.Exec(sqlStr, true, uid, email)
 	if err != nil {
 		log.Logger.Errorf("更新用户信息失败: %s", err)
 		return sz.MsgResponse(sz.UpdateDBErr, "邮箱验证失败")
 	}
 
-	log.Logger.Infof("%s 验证成功", mail)
+	log.Logger.Infof("%s 验证成功", email)
 
 	return sz.SuccessResponse()
 }
