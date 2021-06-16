@@ -16,6 +16,7 @@ const (
 	EmailExist          errCode = 40022 // 邮箱被占用
 	VerifyCodeExpired   errCode = 40023 // 邮箱验证码已过期
 	VerifyCodeIncorrect errCode = 40024 // 验证码不正确
+	VerifyAlready       errCode = 40025 // 邮箱已验证
 	AccNotLegalErr      errCode = 40030 // 账号非法操作
 	AccAuthErr          errCode = 40031 // 账号未登录
 	AccNotVerify        errCode = 40032 // 账号邮箱未验证
@@ -48,6 +49,7 @@ var ResMsgFlags = map[errCode]string{
 	Error:               "出错",
 	VerifyCodeExpired:   "未发送验证码或验证码已过期",
 	VerifyCodeIncorrect: "验证码不正确",
+	VerifyAlready:       "邮箱已验证",
 	AccNotVerify:        "邮箱未验证",
 	ParamErr:            "参数错误",
 	FormatErr:           "格式不正确",
@@ -64,18 +66,30 @@ var ResMsgFlags = map[errCode]string{
 	MailSendErr:         "邮件发送失败",
 }
 
-// Msg 获取错误码对应错误信息
-func Msg(code errCode) string {
-	msg, ok := ResMsgFlags[code]
-	if ok {
-		return msg
+// Response 响应信息结构体
+type Response struct {
+	Code interface{} `json:"code"`
+	Data interface{} `json:"data"`
+	Msg  string      `json:"msg"`
+}
+
+// BuildResponse 响应信息构建
+func BuildResponse(code interface{}, data interface{}, msg string) Response {
+	return Response{
+		Code: code,
+		Data: data,
+		Msg:  msg,
 	}
-	return ResMsgFlags[Error]
 }
 
 // SuccessResponse 通用成功信息
 func SuccessResponse() Response {
 	return BuildResponse(Success, nil, Msg(Success))
+}
+
+// MsgResponse 自定义消息错误返回
+func MsgResponse(code interface{}, msg string) Response {
+	return BuildResponse(code, nil, msg)
 }
 
 // ErrResponse 通用错误信息
@@ -87,4 +101,13 @@ func ErrResponse(errCode errCode) Response {
 // ParmErr 参数错误信息
 func ParmErr() Response {
 	return BuildResponse(ParamErr, nil, "参数错误")
+}
+
+// Msg 获取错误码对应错误信息
+func Msg(code errCode) string {
+	msg, ok := ResMsgFlags[code]
+	if ok {
+		return msg
+	}
+	return ResMsgFlags[Error]
 }

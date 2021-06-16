@@ -1,23 +1,23 @@
 package router
 
 import (
-	v12 "acgfate/api/http/v1"
+	v1 "acgfate/api/http/v1"
 	"acgfate/middleware"
 	"github.com/gin-gonic/gin"
 )
 
+// InitWordsRouter 初始化文字相关路由
 func InitWordsRouter(r *gin.RouterGroup) {
-	pubGroup := r.Group("words")
+	pub := r.Group("words")
 	{
-		pubGroup.GET(":wid", v12.WordsGet)
+		pub.GET(":wid", v1.WordsGet)
 	}
-	authGroup := pubGroup.Use(
+	auth := pub.Use(
 		middleware.JWTAuthRequired(),
 		middleware.IsVerified(),
-		middleware.IsSilence(),
 		middleware.IsBanned(),
 	)
 	{
-		authGroup.POST("post", v12.WordsPost)
+		auth.POST("post", v1.WordsPost)
 	}
 }

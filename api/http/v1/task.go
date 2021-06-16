@@ -3,22 +3,21 @@ package v1
 import (
 	"net/http"
 
-	"acgfate/services/points"
+	"acgfate/services"
 	"github.com/gin-gonic/gin"
 )
 
-// PointsSign 普通签到
+// TaskSign 普通签到
 // @Summary 普通签到
 // @Description 普通签到接口
-// @Tags Points
+// @Tags Task
 // @Produce  application/json
 // @Param Authorization header string true "用户令牌"
-// @Param form body points.SignService true "用户信息"
-// @Success 0 {object} serializer.UserPointsResponse "msg: "Success"
+// @Success 0 {object} serializer.TaskSignResponse "msg: "Success"
 // @Failure 60001 {object} serializer.Response "msg: 参数错误"
 // @Router /sign [post]
-func PointsSign(c *gin.Context) {
-	var form points.SignService
+func TaskSign(c *gin.Context) {
+	var form services.SignService
 	res := form.DoSign(c)
 	c.JSON(http.StatusOK, res)
 }

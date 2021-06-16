@@ -19,10 +19,10 @@ func GenToken(uid uint64) (string, error) {
 	expireDuration := time.Hour * time.Duration(config.Conf.JWT.ExpireDuration)
 	// 生成JWT字段
 	c := Claims{
-		uid, // 自定义字段
+		uid,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(expireDuration).Unix(), // Expire time
-			Issuer:    "ACGFATE",                             // 签发者
+			Issuer:    "ACG.Fate",                            // 签发者
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)

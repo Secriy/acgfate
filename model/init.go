@@ -21,6 +21,4 @@ func InitDatabase() {
 	mysqlDB.SetMaxIdleConns(10)
 
 	DB = mysqlDB
-
-	Create() // 创建表
 }

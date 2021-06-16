@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	sz "acgfate/serializer"
-	"acgfate/services/user"
+	"acgfate/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +18,7 @@ import (
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /email/verify [get]
 func MailSend(c *gin.Context) {
-	var form user.MailSendService
+	var form services.MailSendService
 	res := form.Send(c)
 	c.JSON(http.StatusOK, res)
 }
@@ -30,12 +30,12 @@ func MailSend(c *gin.Context) {
 // @Accept application/json
 // @Produce  application/json
 // @Param Authorization header string true "用户令牌"
-// @Param form body user.MailVerifyService true "验证码"
+// @Param form body services.MailVerifyService true "验证码"
 // @Success 0 {object} serializer.Response "msg: "Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /email/verify [post]
 func MailVerify(c *gin.Context) {
-	var form user.MailVerifyService
+	var form services.MailVerifyService
 	if err := c.ShouldBind(&form); err == nil {
 		res := form.Verify(c)
 		c.JSON(http.StatusOK, res)

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	sz "acgfate/serializer"
-	"acgfate/services/words"
+	"acgfate/services"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,12 +14,12 @@ import (
 // @Tags Words
 // @Accept application/json
 // @Produce  application/json
-// @Param form body words.PostService true "文字发表信息"
-// @Success 0 {object} serializer.WordsResponse "msg:"发表成功""
+// @Param form body services.PostService true "文字发表信息"
+// @Success 0 {object} serializer.Response "msg:"发表成功""
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /words/post [post]
 func WordsPost(c *gin.Context) {
-	var form words.PostService
+	var form services.PostService
 	if err := c.ShouldBind(&form); err == nil {
 		res := form.Post(c)
 		c.JSON(http.StatusOK, res)
@@ -38,9 +38,9 @@ func WordsPost(c *gin.Context) {
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /words/:id [get]
 func WordsGet(c *gin.Context) {
-	var form words.GetService
+	var form services.GetService
 	if err := c.ShouldBind(&form); err == nil {
-		res := form.Get(c)
+		res := form.Get(c.Param("wid"))
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, sz.ParmErr())

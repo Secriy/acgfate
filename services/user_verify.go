@@ -1,4 +1,4 @@
-package user
+package services
 
 import (
 	"context"
@@ -8,7 +8,6 @@ import (
 	"acgfate/cache"
 	"acgfate/log"
 	"acgfate/model"
-	"acgfate/model/user"
 	sz "acgfate/serializer"
 	"acgfate/utils"
 	"github.com/gin-gonic/gin"
@@ -25,15 +24,15 @@ type MailVerifyService struct {
 func (service *MailSendService) Send(c *gin.Context) sz.Response {
 	ctx := context.Background()
 	// 绑定用户模型
-	var baseInfo user.BaseInfo
-	if err := baseInfo.GetBaseInfo(c); err != nil {
-		log.Logger.Errorf("%s: %s", sz.Msg(sz.QueryDBErr), err)
-		return sz.ErrResponse(sz.QueryDBErr)
+	acc := model.CurrentUser(c)
+	// 判断是否已经验证
+	if acc.Verified {
+		return sz.ErrResponse(sz.VerifyAlready)
 	}
 	// 生成验证码
 	verifyCode := utils.GenerateCode(6)
 	// 存储验证码
-	email := baseInfo.Email
+	email := acc.Email
 	key := fmt.Sprintf("MailVerifyCode:%s", email)
 	if err := cache.RDB.Set(ctx, key, verifyCode, 120*time.Second).Err(); err != nil { // 超时时间120s
 		log.Logger.Errorf("%s: %s", sz.Msg(sz.CacheStoreErr), err)
@@ -55,13 +54,13 @@ func (service *MailSendService) Send(c *gin.Context) sz.Response {
 func (service *MailVerifyService) Verify(c *gin.Context) sz.Response {
 	ctx := context.Background()
 	// 绑定用户模型
-	var baseInfo user.BaseInfo
-	if err := baseInfo.GetBaseInfo(c); err != nil {
-		log.Logger.Errorf("%s: %s", sz.Msg(sz.QueryDBErr), err)
-		return sz.ErrResponse(sz.QueryDBErr)
+	acc := model.CurrentUser(c)
+	// 判断是否已经验证
+	if acc.Verified {
+		return sz.ErrResponse(sz.VerifyAlready)
 	}
 	// 获取缓存中的验证码
-	email := baseInfo.Email
+	email := acc.Email
 	key := fmt.Sprintf("MailVerifyCode:%s", email)
 	val, err := cache.RDB.Get(ctx, key).Result()
 	// 判断是否发送验证码或过期
@@ -80,9 +79,8 @@ func (service *MailVerifyService) Verify(c *gin.Context) sz.Response {
 	}
 	cache.RDB.Del(ctx, k)
 	// 写数据库
-	uid := c.GetUint64("UID")
-	sqlStr := "UPDATE user_base_info SET mail_verified = ? where uid = ? AND email = ?"
-	_, err = model.DB.Exec(sqlStr, true, uid, email)
+	sqlStr := "UPDATE accounts SET verified = ? where uid = ? AND email = ?"
+	_, err = model.DB.Exec(sqlStr, true, acc.UID, email)
 	if err != nil {
 		log.Logger.Errorf("更新用户信息失败: %s", err)
 		return sz.MsgResponse(sz.UpdateDBErr, "邮箱验证失败")

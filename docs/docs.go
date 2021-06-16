@@ -24,6 +24,43 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/check/username": {
+            "get": {
+                "description": "查询用户名是否存在",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Check"
+                ],
+                "summary": "查询用户名是否存在",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: \"可用",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "40021": {
+                        "description": "msg: 用户名已存在",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/email/verify": {
             "get": {
                 "description": "验证码邮件发送接口",
@@ -84,7 +121,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.MailVerifyService"
+                            "$ref": "#/definitions/services.MailVerifyService"
                         }
                     }
                 ],
@@ -127,11 +164,83 @@ var doc = `{
                     "0": {
                         "description": "msg: \"Success",
                         "schema": {
-                            "$ref": "#/definitions/user.BaseInfoResponse"
+                            "$ref": "#/definitions/serializer.TaskSignResponse"
                         }
                     },
                     "60001": {
                         "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/email": {
+            "get": {
+                "description": "查询邮箱是否存在",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Check"
+                ],
+                "summary": "查询邮箱是否存在",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: \"可用",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "40022": {
+                        "description": "msg: 邮箱已存在",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/info": {
+            "get": {
+                "description": "用户个人信息接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "用户个人信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户令牌",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg: Success",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.BasicInfoResponse"
+                        }
+                    },
+                    "50000": {
+                        "description": "msg: 查询个人信息错误",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
                         }
@@ -159,7 +268,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.LoginService"
+                            "$ref": "#/definitions/services.LoginService"
                         }
                     }
                 ],
@@ -167,46 +276,11 @@ var doc = `{
                     "0": {
                         "description": "msg: Success",
                         "schema": {
-                            "$ref": "#/definitions/user.LoginResponse"
+                            "$ref": "#/definitions/serializer.LoginResponse"
                         }
                     },
                     "30001": {
                         "description": "msg: 参数错误",
-                        "schema": {
-                            "$ref": "#/definitions/serializer.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/me": {
-            "get": {
-                "description": "用户个人信息接口",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "用户个人信息",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "用户令牌",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "0": {
-                        "description": "msg: Success",
-                        "schema": {
-                            "$ref": "#/definitions/user.BaseInfoResponse"
-                        }
-                    },
-                    "50000": {
-                        "description": "msg: 查询个人信息错误",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
                         }
@@ -234,7 +308,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.RegisterService"
+                            "$ref": "#/definitions/services.RegisterService"
                         }
                     }
                 ],
@@ -242,7 +316,7 @@ var doc = `{
                     "0": {
                         "description": "msg: Success",
                         "schema": {
-                            "$ref": "#/definitions/user.BaseInfoResponse"
+                            "$ref": "#/definitions/serializer.Response"
                         }
                     },
                     "30001": {
@@ -281,7 +355,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user.UpdateService"
+                            "$ref": "#/definitions/services.UpdateInfoService"
                         }
                     }
                 ],
@@ -289,7 +363,82 @@ var doc = `{
                     "0": {
                         "description": "msg: \"Success",
                         "schema": {
-                            "$ref": "#/definitions/user.BaseInfoResponse"
+                            "$ref": "#/definitions/serializer.BasicInfoResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/words/:id": {
+            "get": {
+                "description": "文字查看接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Words"
+                ],
+                "summary": "文字查看",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Words ID",
+                        "name": "WID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg:\"获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.WordsResponse"
+                        }
+                    },
+                    "30001": {
+                        "description": "msg: 参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/words/post": {
+            "post": {
+                "description": "文字发表接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Words"
+                ],
+                "summary": "文字发表",
+                "parameters": [
+                    {
+                        "description": "文字发表信息",
+                        "name": "form",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/services.PostService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "msg:\"发表成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
                         }
                     },
                     "30001": {
@@ -303,26 +452,9 @@ var doc = `{
         }
     },
     "definitions": {
-        "serializer.Response": {
+        "serializer.BasicInfoResponse": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "object"
-                },
-                "data": {
-                    "type": "object"
-                },
-                "msg": {
-                    "type": "string"
-                }
-            }
-        },
-        "user.BaseInfoResponse": {
-            "type": "object",
-            "properties": {
-                "account_state": {
-                    "type": "string"
-                },
                 "birthday": {
                     "type": "string"
                 },
@@ -344,12 +476,6 @@ var doc = `{
                 "level": {
                     "type": "integer"
                 },
-                "email": {
-                    "type": "string"
-                },
-                "email_verify": {
-                    "type": "boolean"
-                },
                 "nickname": {
                     "type": "string"
                 },
@@ -367,7 +493,7 @@ var doc = `{
                 }
             }
         },
-        "user.LoginResponse": {
+        "serializer.LoginResponse": {
             "type": "object",
             "properties": {
                 "token": {
@@ -377,14 +503,70 @@ var doc = `{
                 "uid": {
                     "description": "UID",
                     "type": "integer"
+                }
+            }
+        },
+        "serializer.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "object"
                 },
-                "username": {
-                    "description": "用户名",
+                "data": {
+                    "type": "object"
+                },
+                "msg": {
                     "type": "string"
                 }
             }
         },
-        "user.LoginService": {
+        "serializer.TaskSignResponse": {
+            "type": "object",
+            "properties": {
+                "reward": {
+                    "type": "string"
+                }
+            }
+        },
+        "serializer.WordsResponse": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "comments": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "edit_time": {
+                    "type": "string"
+                },
+                "likes": {
+                    "type": "integer"
+                },
+                "post_time": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "views": {
+                    "type": "integer"
+                },
+                "wid": {
+                    "type": "integer"
+                }
+            }
+        },
+        "services.LoginService": {
             "type": "object",
             "required": [
                 "password",
@@ -399,7 +581,7 @@ var doc = `{
                 }
             }
         },
-        "user.MailVerifyService": {
+        "services.MailVerifyService": {
             "type": "object",
             "required": [
                 "code"
@@ -410,7 +592,28 @@ var doc = `{
                 }
             }
         },
-        "user.RegisterService": {
+        "services.PostService": {
+            "type": "object",
+            "required": [
+                "category",
+                "content"
+            ],
+            "properties": {
+                "category": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "services.RegisterService": {
             "type": "object",
             "required": [
                 "email",
@@ -433,7 +636,7 @@ var doc = `{
                 }
             }
         },
-        "user.UpdateService": {
+        "services.UpdateInfoService": {
             "type": "object",
             "properties": {
                 "birthday": {
@@ -444,9 +647,6 @@ var doc = `{
                 },
                 "gender": {
                     "description": "只能为 男、女、其他、保密",
-                    "type": "string"
-                },
-                "email": {
                     "type": "string"
                 },
                 "nickname": {
