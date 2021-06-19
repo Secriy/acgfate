@@ -1,0 +1,9 @@
+.vscode/
+.idea
+test
+logs/
+*.log
+*.exe
+*.yaml
+*.ps1
+go.sum
