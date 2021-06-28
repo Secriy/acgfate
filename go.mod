@@ -22,6 +22,7 @@ require (
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/swaggo/swag v1.7.0
 	github.com/ugorji/go v1.2.6 // indirect
+	go.mongodb.org/mongo-driver v1.5.3
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a

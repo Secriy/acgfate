@@ -26,6 +26,6 @@ func getEncoder() zapcore.Encoder {
 }
 
 func getLogWriter() zapcore.WriteSyncer {
-	file, _ := os.Create("./logs/test.log")
+	file, _ := os.Create("./log/test.log")
 	return zapcore.AddSync(file)
 }
