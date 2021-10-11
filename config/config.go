@@ -6,30 +6,32 @@ import (
 	"github.com/spf13/viper"
 )
 
-type RedisConf struct {
-	Host     string `mapstructure:"host"`
-	Password string `mapstructure:"passwd"`
-	DB       int    `mapstructure:"db"`
-}
-
-type JwtConf struct {
-	Secret         string `mapstructure:"secret"`
-	ExpireDuration int    `mapstructure:"expire_duration"`
-}
-
-type MailConf struct {
-	Smtp     string `mapstructure:"smtp"`
-	Port     int    `mapstructure:"port"`
-	Sender   string `mapstructure:"sender"`
-	Password string `mapstructure:"passwd"`
-}
-
 type Config struct {
-	DSN   string    `mapstructure:"dsn"`
-	Mode  string    `mapstructure:"mode"`
-	Redis RedisConf `mapstructure:"redis"`
-	JWT   JwtConf   `mapstructure:"jwt"`
-	Email MailConf  `maostructure:"email"`
+	Version string `mapstructure:"version"`
+	Name    string `mapstructure:"name"`
+	Mode    string `mapstructure:"mode"`
+	DSN     string `mapstructure:"dsn"`
+	// Redis
+	RedisConf struct {
+		Host     string `mapstructure:"host"`
+		Password string `mapstructure:"passwd"`
+		DB       int    `mapstructure:"db"`
+	} `mapstructure:"redis"`
+	// Auth
+	Session struct {
+		Secret string `mapstructure:"secret"`
+	}
+	JWTConf struct {
+		Secret         string `mapstructure:"secret"`
+		ExpireDuration int    `mapstructure:"expire_duration"`
+	} `mapstructure:"jwt"`
+	// Email
+	EmailConf struct {
+		Smtp     string `mapstructure:"smtp"`
+		Port     int    `mapstructure:"port"`
+		Sender   string `mapstructure:"sender"`
+		Password string `mapstructure:"passwd"`
+	} `mapstructure:"email"`
 }
 
 var Conf Config
