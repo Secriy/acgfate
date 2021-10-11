@@ -5,9 +5,9 @@ import (
 
 	"acgfate/cache"
 	"acgfate/config"
-	"acgfate/log"
 	"acgfate/model"
 	"acgfate/router"
+	"acgfate/utils/logger"
 )
 
 // @title ACG.Fate API
@@ -16,10 +16,10 @@ import (
 // @host 127.0.0.1:3000
 // @BasePath /api/v1
 func main() {
-	//
-	log.InitLogger()
 	// Read config file
 	config.ReadConfig()
+	// Initialize logger
+	logger.InitLogger(config.Conf.Mode)
 	// Initialize database
 	model.InitDatabase()
 	// Initialize Redis client
@@ -31,5 +31,4 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("Error run Gin router: %s \n", err))
 	}
-
 }
