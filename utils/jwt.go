@@ -12,36 +12,36 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-// GenToken 生成JWT
+// GenToken generate JWT token
 func GenToken(uid uint64) (string, error) {
-	// JWT配置
-	jwtSecret := []byte(config.Conf.JWT.Secret)
-	expireDuration := time.Hour * time.Duration(config.Conf.JWT.ExpireDuration)
-	// 生成JWT字段
+	conf := config.Conf.JWTConf
+
+	expireDuration := time.Hour * time.Duration(conf.ExpireDuration)
+
 	c := Claims{
 		uid,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(expireDuration).Unix(), // Expire time
+			ExpiresAt: time.Now().Add(expireDuration).Unix(), // expire time
 			Issuer:    "ACG.Fate",                            // 签发者
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
 
-	return token.SignedString(jwtSecret)
+	return token.SignedString([]byte(conf.Secret))
 }
 
-// ParseToken 解析JWT
+// ParseToken Parse JWT token
 func ParseToken(tokenString string) (*Claims, error) {
-	// JWT配置
-	jwtSecret := []byte(config.Conf.JWT.Secret)
-	// 解析token
+	conf := config.Conf.JWTConf
+
+	// parse token
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (i interface{}, err error) {
-		return jwtSecret, nil
+		return []byte(conf.Secret), nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	if claims, ok := token.Claims.(*Claims); ok && token.Valid { // 校验token
+	if claims, ok := token.Claims.(*Claims); ok && token.Valid { // validate token
 		return claims, nil
 	}
 	return nil, err

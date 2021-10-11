@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strings"
 
-	"acgfate/log"
 	"acgfate/model"
 	sz "acgfate/serializer"
 	"acgfate/utils"
+	"acgfate/utils/logger"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,7 +35,7 @@ func JWTAuthRequired() gin.HandlerFunc {
 				"code": sz.AccAuthErr,
 				"msg":  msg,
 			})
-			log.Logger.Info(msg) // log
+			logger.Logger.Info(msg) // output log
 			c.Abort()
 			return
 		}
@@ -48,7 +48,7 @@ func JWTAuthRequired() gin.HandlerFunc {
 func CurrentUser(c *gin.Context, uid interface{}) {
 	var acc model.Account
 	if err := acc.BindAccount(uid); err != nil {
-		log.Logger.Errorf(err.Error())
+		logger.Logger.Errorf(err.Error())
 		return
 	}
 	c.Set("USER", &acc)
