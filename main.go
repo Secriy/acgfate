@@ -5,7 +5,7 @@ import (
 
 	"acgfate/cache"
 	"acgfate/config"
-	"acgfate/model"
+	"acgfate/database"
 	"acgfate/router"
 	"acgfate/utils/logger"
 )
@@ -21,7 +21,7 @@ func main() {
 	// Initialize logger
 	logger.InitLogger(config.Conf.Mode)
 	// Initialize database
-	model.InitDatabase()
+	database.InitDatabase()
 	// Initialize Redis client
 	cache.InitRedisClient()
 	// Initialize the router
