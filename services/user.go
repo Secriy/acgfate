@@ -1,6 +1,7 @@
 package services
 
 import (
+	"acgfate/database"
 	sz "acgfate/serializer"
 )
 
@@ -12,18 +13,19 @@ type EmailService struct {
 	Email string `form:"email" binding:"required,email"`
 }
 
+// CheckUsername 判断用户名是否被占用
 func (service *UsernameService) CheckUsername() sz.Response {
-	// 判断用户名是否被占用
-	if Exist("accounts", "username", service.Username) {
+	var dao database.UserDao
+	if dao.IsExists(database.QUname, service.Username) {
 		return sz.ErrResponse(sz.RegNameExist)
 	}
-
 	return sz.SuccessResponse()
 }
 
+// CheckEmail 判断邮箱是否被占用
 func (service *EmailService) CheckEmail() sz.Response {
-	// 判断邮箱是否被占用
-	if Exist("accounts", "email", service.Email) {
+	var dao database.UserDao
+	if dao.IsExists(database.QEmail, service.Email) {
 		return sz.ErrResponse(sz.EmailExist)
 	}
 	return sz.SuccessResponse()

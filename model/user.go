@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,7 +16,6 @@ type User struct {
 	Username  string    `db:"username"`
 	Password  string    `db:"password"`
 	Nickname  string    `db:"nickname"`
-	Phone     string    `db:"phone"`
 	Email     string    `db:"email"`
 	Avatar    string    `db:"avatar"`
 	State     uint8     `db:"state"`
@@ -33,6 +33,16 @@ type UserInfo struct {
 	City      string    `db:"city"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
+}
+
+// CurrentUser 获取当前用户模型
+func CurrentUser(c *gin.Context) *User {
+	ret, ok := c.Get("user")
+	if !ok {
+		return nil
+	}
+	user, ok := ret.(*User)
+	return user
 }
 
 // SetPassword 设置密码

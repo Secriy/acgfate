@@ -1,11 +1,10 @@
 package services
 
 import (
-	"time"
-
-	"acgfate/log"
+	"acgfate/database"
 	"acgfate/model"
 	sz "acgfate/serializer"
+	"acgfate/utils/logger"
 	_ "github.com/gin-gonic/gin"
 )
 
@@ -18,34 +17,30 @@ type RegisterService struct {
 
 // Register 用户注册服务
 func (service *RegisterService) Register() sz.Response {
-	var acc model.Account
+	var user model.User
+
+	var dao database.UserDao
 	// 判断用户名是否被占用
-	if Exist("accounts", "username", service.Username) {
+	if dao.IsExists(database.QUname, service.Username) {
 		return sz.ErrResponse(sz.RegNameExist)
 	}
 	// 判断邮箱是否被占用
-	if Exist("accounts", "email", service.Email) {
+	if dao.IsExists(database.QEmail, service.Email) {
 		return sz.ErrResponse(sz.EmailExist)
 	}
 	// 加密密码
-	if err := acc.SetPassword(service.Password); err != nil {
-		log.Logger.Errorf("%s: %s", sz.Msg(sz.PasswdEncryptErr), err)
+	if err := user.SetPassword(service.Password); err != nil {
+		logger.Logger.Errorf("%s: %s", sz.Msg(sz.PasswdEncryptErr), err)
 		return sz.ErrResponse(sz.PasswdEncryptErr)
 	}
 	// 创建用户账号记录
-	accSQL := "INSERT INTO accounts (username, password, email) VALUES (?,?,?)"
-	_, err := model.DB.Exec(accSQL, service.Username, acc.Password, service.Email)
+	user.Username = service.Username
+	user.Nickname = service.Nickname
+	user.Email = service.Email
+	err := dao.InsertRow(user)
 	if err != nil {
-		log.Logger.Errorf("创建用户失败: %s", err)
+		logger.Logger.Errorf("创建用户失败: %s", err)
 		return sz.MsgResponse(sz.InsertDBErr, "创建用户失败")
 	}
-	// 创建用户基础信息记录
-	infoSQL := "INSERT INTO  user_basic_info (nickname,join_time) VALUES (?,?)"
-	_, err = model.DB.Exec(infoSQL, service.Nickname, time.Now())
-	if err != nil {
-		log.Logger.Errorf("创建用户失败: %s", err)
-		return sz.MsgResponse(sz.InsertDBErr, "创建用户失败")
-	}
-
 	return sz.SuccessResponse()
 }

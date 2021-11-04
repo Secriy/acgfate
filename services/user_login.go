@@ -1,10 +1,12 @@
 package services
 
 import (
-	"acgfate/log"
+	"acgfate/database"
 	"acgfate/model"
 	sz "acgfate/serializer"
-	"acgfate/utils"
+	"acgfate/utils/logger"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
 type LoginService struct {
@@ -13,20 +15,26 @@ type LoginService struct {
 }
 
 // Login 用户登录服务
-func (service *LoginService) Login() sz.Response {
-	var acc model.Account
-	// 检查账号是否存在 检查密码是否正确
-	if err := acc.BindAccountByUsername(service.Username); err != nil || !acc.CheckPassword(service.Password) {
+func (service *LoginService) Login(c *gin.Context) sz.Response {
+	var dao database.UserDao
+	user, err := dao.QueryRow(database.QUname, service.Username)
+	if err != nil {
+		logger.Logger.Debugf("登录失败: %e", err)
 		return sz.MsgResponse(sz.Failure, "账号或密码错误")
 	}
-	// 生成用户Token
-	token, err := utils.GenToken(acc.UID)
-	if err != nil {
-		log.Logger.Infof("生成token失败: %s", err)
-		return sz.ErrResponse(sz.TokenGenerateErr)
+	if !user.CheckPassword(service.Password) {
+		return sz.MsgResponse(sz.Failure, "账号或密码错误")
 	}
+	service.SetSession(c, user)
+	logger.Logger.Infof("登录成功: %d", user.UID)
 
-	log.Logger.Infof("登录成功: %d", acc.UID)
+	return sz.SuccessResponse()
+}
 
-	return sz.BuildLoginResponse(&acc, token)
+// SetSession 保存 session
+func (service *LoginService) SetSession(c *gin.Context, user *model.User) {
+	s := sessions.Default(c)
+	s.Clear()
+	s.Set("uid", user.UID)
+	_ = s.Save()
 }

@@ -2,54 +2,52 @@ package middleware
 
 import (
 	"net/http"
-	"strings"
 
+	"acgfate/database"
 	"acgfate/model"
 	sz "acgfate/serializer"
-	"acgfate/utils"
-	"acgfate/utils/logger"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
 )
 
-func JWTAuthRequired() gin.HandlerFunc {
+// Session 初始化session
+func Session(secret, rdb string) gin.HandlerFunc {
+	store, _ := redis.NewStore(10, "tcp", rdb, "", []byte(secret))
+	// Also set Secure: true if using SSL, you should though
+	store.Options(sessions.Options{HttpOnly: true, MaxAge: 7 * 86400, Path: "/"})
+	return sessions.Sessions("af-session", store)
+}
+
+// CurrentUser 绑定当前用户
+func CurrentUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authStr := c.Request.Header.Get("Authorization")
-		msg := ""
-		// 判断是否为空
-		if authStr == "" {
-			msg = "请求头Authorization为空"
+		session := sessions.Default(c)
+		uid := session.Get("uid")
+		if uid != nil {
+			var dao database.UserDao
+			user, err := dao.QueryRow(database.QUID, uid)
+			if err == nil {
+				c.Set("user", user)
+			}
 		}
-		// 格式化Authorization
-		strParts := strings.SplitN(authStr, " ", 2)
-		if len(strParts) != 2 || strParts[0] != "Bearer" {
-			msg = "请求头Authorization格式错误"
-		}
-		// 解析判断是否正确
-		res, err := utils.ParseToken(strParts[1])
-		if err != nil {
-			msg = "Token无效"
-		}
-		// 返回错误
-		if msg != "" {
-			c.JSON(http.StatusOK, gin.H{
-				"code": sz.AccAuthErr,
-				"msg":  msg,
-			})
-			logger.Logger.Info(msg) // output log
-			c.Abort()
-			return
-		}
-		CurrentUser(c, res.UID) // 保存当前用户信息到上下文
 		c.Next()
 	}
 }
 
-// CurrentUser 绑定当前用户
-func CurrentUser(c *gin.Context, uid interface{}) {
-	var acc model.Account
-	if err := acc.BindAccount(uid); err != nil {
-		logger.Logger.Errorf(err.Error())
-		return
+// AuthRequired 需要登录
+func AuthRequired() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if user, _ := c.Get("user"); user != nil {
+			if _, ok := user.(*model.User); ok {
+				c.Next()
+				return
+			}
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code": sz.AccAuthErr,
+			"msg":  sz.Msg(sz.AccAuthErr),
+		})
+		c.Abort()
 	}
-	c.Set("USER", &acc)
 }

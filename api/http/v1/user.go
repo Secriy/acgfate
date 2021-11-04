@@ -41,7 +41,7 @@ func UserRegister(c *gin.Context) {
 func UserLogin(c *gin.Context) {
 	var form services.LoginService
 	if err := c.ShouldBind(&form); err == nil {
-		res := form.Login()
+		res := form.Login(c)
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, sz.ParmErr())
@@ -74,12 +74,12 @@ func UserInfo(c *gin.Context) {
 // @Success 0 {object} serializer.BasicInfoResponse "msg: "Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/update [put]
-func UserInfoUpdate(c *gin.Context) {
-	var form services.UpdateInfoService
-	if err := c.ShouldBind(&form); err == nil {
-		res := form.Update(c)
-		c.JSON(http.StatusOK, res)
-	} else {
-		c.JSON(http.StatusOK, sz.ParmErr())
-	}
-}
+// func UserInfoUpdate(c *gin.Context) {
+// 	var form services.UpdateInfoService
+// 	if err := c.ShouldBind(&form); err == nil {
+// 		res := form.Update(c)
+// 		c.JSON(http.StatusOK, res)
+// 	} else {
+// 		c.JSON(http.StatusOK, sz.ParmErr())
+// 	}
+// }

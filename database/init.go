@@ -8,21 +8,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// type DAO interface {
-// 	// QueryRow 查询单条记录
-// 	QueryRow(interface{}) (interface{}, error)
-// 	// InsertRow 插入单条记录
-// 	InsertRow(interface{}) (interface{}, error)
-// 	// InsertMRow 插入多条记录
-// 	InsertMRow([]interface{})
-// 	// UpdateRow 更新单条记录
-// 	UpdateRow()
-// 	// DeleteRow 删除单条记录
-// 	DeleteRow()
-// 	// DeleteMRow 删除多条记录
-// 	DeleteMRow()
-// }
-
 var DB *sqlx.DB
 
 // InitDatabase 初始化数据库连接

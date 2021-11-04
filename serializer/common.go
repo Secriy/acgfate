@@ -51,6 +51,7 @@ var ResMsgFlags = map[errCode]string{
 	VerifyCodeIncorrect: "验证码不正确",
 	VerifyAlready:       "邮箱已验证",
 	AccNotVerify:        "邮箱未验证",
+	AccAuthErr:          "账号未登录",
 	ParamErr:            "参数错误",
 	FormatErr:           "格式不正确",
 	RegNameExist:        "用户名已存在",

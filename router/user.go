@@ -15,16 +15,16 @@ func InitUserRouter(r *gin.RouterGroup) {
 	}
 
 	// 需要鉴权的路由组
-	auth := pub.Use(middleware.JWTAuthRequired())
+	auth := pub.Use(middleware.AuthRequired())
 	{
-		auth.GET("info", v1.UserInfo)         // 获取个人信息
-		auth.PUT("update", v1.UserInfoUpdate) // 更新个人基础信息
+		auth.GET("info", v1.UserInfo) // 获取个人信息
+		// auth.PUT("update", v1.UserInfoUpdate) // 更新个人基础信息
 	}
 
 	// 邮箱路由组
-	mail := r.Group("email").Use(middleware.JWTAuthRequired())
-	{
-		mail.GET("verify", v1.MailSend)    // 发送验证码
-		mail.POST("verify", v1.MailVerify) // 验证邮箱
-	}
+	// mail := r.Group("email").Use(middleware.AuthRequired())
+	// {
+	// 	mail.GET("verify", v1.MailSend)    // 发送验证码
+	// 	mail.POST("verify", v1.MailVerify) // 验证邮箱
+	// }
 }
