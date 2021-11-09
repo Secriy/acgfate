@@ -13,7 +13,7 @@ import (
 )
 
 // @title ACG.Fate API
-// @version 0.1.1
+// @version 0.2.1
 // @description The RESTFul API of Server
 // @host 127.0.0.1:3000
 // @BasePath /api/v1

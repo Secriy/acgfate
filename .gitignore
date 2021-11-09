@@ -4,6 +4,6 @@ test
 logs/
 *.log
 *.exe
-*.yaml
 *.ps1
 go.sum
+config.yaml

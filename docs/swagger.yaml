@@ -1,0 +1,135 @@
+basePath: /api/v1
+definitions:
+  serializer.Response:
+    properties:
+      code:
+        type: object
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
+  serializer.UserResponse:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      nickname:
+        type: string
+      state:
+        type: integer
+      uid:
+        type: integer
+      username:
+        type: string
+    type: object
+  service.LoginService:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  service.RegisterService:
+    properties:
+      email:
+        type: string
+      nickname:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - nickname
+    - password
+    - username
+    type: object
+host: 127.0.0.1:3000
+info:
+  contact: {}
+  description: The RESTFul API of Server
+  title: ACG.Fate API
+  version: 0.2.1
+paths:
+  /user/info:
+    get:
+      description: 用户个人信息接口
+      parameters:
+      - description: 用户令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 'msg: Success'
+          schema:
+            $ref: '#/definitions/serializer.UserResponse'
+        "50000":
+          description: 'msg: 查询个人信息错误'
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 用户个人信息
+      tags:
+      - User
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录接口
+      parameters:
+      - description: 用户名, 密码
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/service.LoginService'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 'msg: Success'
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "30001":
+          description: 'msg: 参数错误'
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 用户登录
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: 用户注册接口
+      parameters:
+      - description: 用户名, 密码, 邮箱, 昵称
+        in: body
+        name: form
+        required: true
+        schema:
+          $ref: '#/definitions/service.RegisterService'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 'msg: Success'
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "30001":
+          description: 'msg: 参数错误'
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 用户注册
+      tags:
+      - User
+swagger: "2.0"
