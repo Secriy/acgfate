@@ -11,7 +11,7 @@ type UserInfoDao struct{}
 func (d *UserInfoDao) QueryRow(idx interface{}) (interface{}, error) {
 	sqlStr := "SELECT * FROM af_user WHERE uid = ?"
 	ret := new(model.UserInfo)
-	err := DB.Get(ret, sqlStr, idx)
+	err := db.Get(ret, sqlStr, idx)
 	return ret, err
 }
 

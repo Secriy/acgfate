@@ -2,57 +2,57 @@ package logger
 
 import (
 	"os"
-	"strings"
 
+	"acgfate/config"
+	"github.com/gin-gonic/gin"
 	"github.com/natefinch/lumberjack"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-var Logger *zap.SugaredLogger
+func Init(conf *config.LogConfig, mode string) (err error) {
+	level := new(zapcore.Level) // set level
+	err = level.UnmarshalText([]byte(conf.Level))
+	if err != nil {
+		return
+	}
 
-func InitLogger(level string) {
-	// encoder config
+	writeSyncer := getLogWriter(conf)
+	defaultEncoder := getLogEncoder()
+
+	var core zapcore.Core
+	if mode == gin.DebugMode {
+		// use both of two zapcore in dev mode
+		consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+		core = zapcore.NewTee(
+			zapcore.NewCore(defaultEncoder, writeSyncer, level),
+			zapcore.NewCore(consoleEncoder, zapcore.Lock(os.Stdout), zapcore.DebugLevel),
+		)
+	} else {
+		// only use default zapcore, not showing in standard output
+		core = zapcore.NewCore(defaultEncoder, writeSyncer, level)
+	}
+	logger := zap.New(core, zap.AddCaller())
+	zap.ReplaceGlobals(logger)
+	return
+}
+
+func getLogEncoder() zapcore.Encoder {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05.0000")
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
-
-	logger := zap.New(
-		zapcore.NewCore(
-			zapcore.NewConsoleEncoder(encoderConfig),
-			zapcore.NewMultiWriteSyncer(getLogWriter(), zapcore.AddSync(os.Stdout)),
-			logLevel(level),
-		),
-		zap.AddCaller(),
-	)
-	Logger = logger.Sugar()
+	encoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
+	encoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
+	return zapcore.NewJSONEncoder(encoderConfig)
 }
 
-func logLevel(level string) zapcore.Level {
-	switch strings.ToLower(level) {
-	case "debug":
-		return zapcore.DebugLevel
-	case "info":
-		return zapcore.InfoLevel
-	case "warning":
-		return zapcore.WarnLevel
-	case "error":
-		return zapcore.ErrorLevel
-	case "fatal":
-		return zapcore.FatalLevel
-	default:
-		return zapcore.InfoLevel
-	}
-}
-
-func getLogWriter() zapcore.WriteSyncer {
+func getLogWriter(conf *config.LogConfig) zapcore.WriteSyncer {
 	lumberJackLogger := &lumberjack.Logger{
-		Filename:   "logs/acgfate.log",
-		MaxSize:    10,
-		MaxBackups: 5,
-		MaxAge:     30,
-		Compress:   false,
+		Filename:   conf.Filename,
+		MaxSize:    conf.MaxSize,
+		MaxBackups: conf.MaxBackups,
+		MaxAge:     conf.MaxAge,
 	}
 	return zapcore.AddSync(lumberJackLogger)
 }

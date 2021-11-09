@@ -4,9 +4,9 @@ import (
 	"acgfate/database"
 	"acgfate/model"
 	sz "acgfate/serializer"
-	"acgfate/utils/logger"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type LoginService struct {
@@ -19,14 +19,14 @@ func (service *LoginService) Login(c *gin.Context) sz.Response {
 	var dao database.UserDao
 	user, err := dao.QueryRow(database.QUname, service.Username)
 	if err != nil {
-		logger.Logger.Debugf("登录失败: %e", err)
+		zap.S().Debugf("登录失败: %e", err)
 		return sz.MsgResponse(sz.Failure, "账号或密码错误")
 	}
 	if !user.CheckPassword(service.Password) {
 		return sz.MsgResponse(sz.Failure, "账号或密码错误")
 	}
 	service.SetSession(c, user)
-	logger.Logger.Infof("登录成功: %d", user.UID)
+	zap.S().Infof("登录成功: %d", user.UID)
 
 	return sz.SuccessResponse()
 }

@@ -1,6 +1,8 @@
 package router
 
 import (
+	"fmt"
+
 	"acgfate/config"
 	_ "acgfate/docs"
 	"acgfate/middleware"
@@ -9,18 +11,17 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// InitRouter initialize the router
-func InitRouter() *gin.Engine {
-	conf := config.Conf
-	// Router Mode
-	gin.SetMode(conf.Mode)
-	// New Router
-	r := gin.Default()
-	// Middleware
-	r.Use(middleware.Session(conf.Session.Secret, conf.RedisConf.Host))
+// Init initialize the router
+func Init(conf *config.RedisConfig, secret string) *gin.Engine {
+	r := gin.New()
+
+	r.Use(middleware.GinLogger(), middleware.GinRecovery(true))
+	r.Use(middleware.Session(secret, fmt.Sprintf("%s:%d",
+		conf.Host,
+		conf.Port,
+	)))
 	r.Use(middleware.Cors())
 	r.Use(middleware.CurrentUser())
-	r.Use(gin.Recovery())
 	// Swagger
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// Router Group

@@ -25,13 +25,13 @@ func (d *UserDao) QueryRow(col int, idx interface{}) (*model.User, error) {
 	default:
 		sqlStr = "SELECT * FROM af_user WHERE uid = ?"
 	}
-	err := DB.Get(&user, sqlStr, idx)
+	err := db.Get(&user, sqlStr, idx)
 	return &user, err
 }
 
 func (d *UserDao) InsertRow(userRow interface{}) error {
 	if user, ok := userRow.(model.User); ok {
-		tx, err := DB.Begin()
+		tx, err := db.Begin()
 		if err != nil {
 			_ = tx.Rollback()
 			return err

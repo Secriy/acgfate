@@ -4,8 +4,8 @@ import (
 	"acgfate/database"
 	"acgfate/model"
 	sz "acgfate/serializer"
-	"acgfate/utils/logger"
 	_ "github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type RegisterService struct {
@@ -30,7 +30,7 @@ func (service *RegisterService) Register() sz.Response {
 	}
 	// 加密密码
 	if err := user.SetPassword(service.Password); err != nil {
-		logger.Logger.Errorf("%s: %s", sz.Msg(sz.PasswdEncryptErr), err)
+		zap.S().Errorf("%s: %s", sz.Message(sz.PasswdEncryptErr), err)
 		return sz.ErrResponse(sz.PasswdEncryptErr)
 	}
 	// 创建用户账号记录
@@ -39,7 +39,7 @@ func (service *RegisterService) Register() sz.Response {
 	user.Email = service.Email
 	err := dao.InsertRow(user)
 	if err != nil {
-		logger.Logger.Errorf("创建用户失败: %s", err)
+		zap.S().Errorf("创建用户失败: %s", err)
 		return sz.MsgResponse(sz.InsertDBErr, "创建用户失败")
 	}
 	return sz.SuccessResponse()
