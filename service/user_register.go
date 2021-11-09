@@ -12,7 +12,7 @@ type RegisterService struct {
 	Username string `json:"username" binding:"required,alphanum,min=2,max=10"`
 	Password string `json:"password" binding:"required,ascii,min=8,max=16"`
 	Nickname string `json:"nickname" binding:"required,min=2,max=15"`
-	Email    string `json:"email" binding:"required,email"`
+	Email    string `json:"email" binding:"required,email,max=100"`
 }
 
 // Register 用户注册服务

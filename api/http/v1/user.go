@@ -19,8 +19,8 @@ import (
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/register [post]
 func UserRegister(c *gin.Context) {
-	var form service.RegisterService
-	if err := c.ShouldBind(&form); err == nil {
+	form := new(service.RegisterService)
+	if err := c.ShouldBind(form); err == nil {
 		res := form.Register()
 		c.JSON(http.StatusOK, res)
 	} else {
@@ -39,8 +39,8 @@ func UserRegister(c *gin.Context) {
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/login [post]
 func UserLogin(c *gin.Context) {
-	var form service.LoginService
-	if err := c.ShouldBind(&form); err == nil {
+	form := new(service.LoginService)
+	if err := c.ShouldBind(form); err == nil {
 		res := form.Login(c)
 		c.JSON(http.StatusOK, res)
 	} else {
@@ -58,7 +58,7 @@ func UserLogin(c *gin.Context) {
 // @Failure 50000 {object} serializer.Response "msg: 查询个人信息错误"
 // @Router /user/info [get]
 func UserInfo(c *gin.Context) {
-	var form service.InfoService
+	form := new(service.InfoService)
 	res := form.Info(c)
 	c.JSON(http.StatusOK, res)
 }

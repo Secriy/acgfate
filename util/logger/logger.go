@@ -49,7 +49,7 @@ func getLogEncoder() zapcore.Encoder {
 
 func getLogWriter(conf *config.LogConfig) zapcore.WriteSyncer {
 	lumberJackLogger := &lumberjack.Logger{
-		Filename:   conf.Filename,
+		Filename:   conf.File,
 		MaxSize:    conf.MaxSize,
 		MaxBackups: conf.MaxBackups,
 		MaxAge:     conf.MaxAge,
