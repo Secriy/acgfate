@@ -12,35 +12,33 @@ type RegisterService struct {
 	Username string `json:"username" binding:"required,alphanum,min=2,max=10"`
 	Password string `json:"password" binding:"required,ascii,min=8,max=16"`
 	Nickname string `json:"nickname" binding:"required,min=2,max=15"`
-	Email    string `json:"email" binding:"required,email,max=100"`
+	Email    string `json:"email" binding:"required,email,min=3,max=100"`
 }
 
 // Register 用户注册服务
 func (service *RegisterService) Register() sz.Response {
 	var user model.User
-
-	var dao database.UserDao
+	dao := new(database.UserDao)
 	// 判断用户名是否被占用
 	if _, err := dao.QueryByUname(service.Username); err == nil {
-		return sz.ErrResponse(sz.RegNameExist)
+		return sz.CodeResponse(sz.CodeRegNameExist)
 	}
 	// 判断邮箱是否被占用
 	if _, err := dao.QueryByEmail(service.Email); err == nil {
-		return sz.ErrResponse(sz.EmailExist)
+		return sz.CodeResponse(sz.CodeEmailExist)
 	}
 	// 加密密码
 	if err := user.SetPassword(service.Password); err != nil {
-		zap.S().Errorf("%s: %s", sz.Message(sz.PasswdEncryptErr), err)
-		return sz.ErrResponse(sz.PasswdEncryptErr)
+		zap.S().Errorf("%s: %s", sz.Msg(sz.CodePasswdEncryptErr), err)
+		return sz.ErrorResponse()
 	}
 	// 创建用户账号记录
 	user.Username = service.Username
 	user.Nickname = service.Nickname
 	user.Email = service.Email
-	err := dao.InsertRow(user)
-	if err != nil {
+	if err := dao.InsertRow(user); err != nil {
 		zap.S().Errorf("创建用户失败: %s", err)
-		return sz.MsgResponse(sz.InsertDBErr, "创建用户失败")
+		return sz.ErrorResponse()
 	}
 	return sz.SuccessResponse()
 }

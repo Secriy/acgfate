@@ -17,7 +17,7 @@ type EmailService struct {
 func (service *UsernameService) CheckUsername() sz.Response {
 	var dao database.UserDao
 	if _, err := dao.QueryByUname(service.Username); err == nil {
-		return sz.ErrResponse(sz.RegNameExist)
+		return sz.CodeResponse(sz.CodeRegNameExist)
 	}
 	return sz.SuccessResponse()
 }
@@ -26,7 +26,7 @@ func (service *UsernameService) CheckUsername() sz.Response {
 func (service *EmailService) CheckEmail() sz.Response {
 	var dao database.UserDao
 	if _, err := dao.QueryByEmail(service.Email); err == nil {
-		return sz.ErrResponse(sz.EmailExist)
+		return sz.CodeResponse(sz.CodeEmailExist)
 	}
 	return sz.SuccessResponse()
 }

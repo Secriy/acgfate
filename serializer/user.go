@@ -16,14 +16,14 @@ type UserResponse struct {
 
 // BuildUserResponse 构建用户信息响应
 func BuildUserResponse(user *model.User) Response {
-	return BuildResponse(Success, UserResponse{
+	return NewResponse(CodeSuccess, UserResponse{
 		UID:      user.UID,
 		Username: user.Username,
 		Nickname: user.Nickname,
 		Email:    user.Email,
 		Avatar:   user.Avatar,
 		State:    user.State,
-	}, Message(Success))
+	}, Msg(CodeSuccess))
 }
 
 // genderName Gender number to name

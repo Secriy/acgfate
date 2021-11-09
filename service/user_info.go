@@ -12,7 +12,7 @@ type InfoService struct{}
 func (service *InfoService) Info(c *gin.Context) sz.Response {
 	user := model.CurrentUser(c)
 	if user == nil {
-		return sz.ErrResponse(sz.AccAuthErr)
+		return sz.CodeResponse(sz.CodeAccAuthErr)
 	}
 	// 构建模型
 	return sz.BuildUserResponse(user)
