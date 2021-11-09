@@ -1,7 +1,5 @@
 package serializer
 
-type errCode int32
-
 // 用户端错误
 const (
 	Success errCode = 0  // 成功代码
@@ -67,6 +65,8 @@ var ResMsgFlags = map[errCode]string{
 	MailSendErr:         "邮件发送失败",
 }
 
+type errCode int32
+
 // Response 响应信息结构体
 type Response struct {
 	Code interface{} `json:"code"`
@@ -83,9 +83,18 @@ func BuildResponse(code interface{}, data interface{}, msg string) Response {
 	}
 }
 
+// Message 获取错误码对应错误信息
+func Message(code errCode) string {
+	msg, ok := ResMsgFlags[code]
+	if ok {
+		return msg
+	}
+	return ResMsgFlags[Error]
+}
+
 // SuccessResponse 通用成功信息
 func SuccessResponse() Response {
-	return BuildResponse(Success, nil, Msg(Success))
+	return BuildResponse(Success, nil, Message(Success))
 }
 
 // MsgResponse 自定义消息错误返回
@@ -95,20 +104,6 @@ func MsgResponse(code interface{}, msg string) Response {
 
 // ErrResponse 通用错误信息
 func ErrResponse(errCode errCode) Response {
-	msg := Msg(errCode)
+	msg := Message(errCode)
 	return BuildResponse(errCode, nil, msg)
-}
-
-// ParmErr 参数错误信息
-func ParmErr() Response {
-	return BuildResponse(ParamErr, nil, "参数错误")
-}
-
-// Msg 获取错误码对应错误信息
-func Msg(code errCode) string {
-	msg, ok := ResMsgFlags[code]
-	if ok {
-		return msg
-	}
-	return ResMsgFlags[Error]
 }

@@ -23,7 +23,7 @@ func BuildUserResponse(user *model.User) Response {
 		Email:    user.Email,
 		Avatar:   user.Avatar,
 		State:    user.State,
-	}, Msg(Success))
+	}, Message(Success))
 }
 
 // genderName Gender number to name
