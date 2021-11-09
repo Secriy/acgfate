@@ -121,7 +121,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.MailVerifyService"
+                            "$ref": "#/definitions/service.MailVerifyService"
                         }
                     }
                 ],
@@ -268,7 +268,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.LoginService"
+                            "$ref": "#/definitions/service.LoginService"
                         }
                     }
                 ],
@@ -308,7 +308,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.RegisterService"
+                            "$ref": "#/definitions/service.RegisterService"
                         }
                     }
                 ],
@@ -355,7 +355,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.UpdateInfoService"
+                            "$ref": "#/definitions/service.UpdateInfoService"
                         }
                     }
                 ],
@@ -430,7 +430,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/services.PostService"
+                            "$ref": "#/definitions/service.PostService"
                         }
                     }
                 ],
@@ -566,7 +566,7 @@ var doc = `{
                 }
             }
         },
-        "services.LoginService": {
+        "service.LoginService": {
             "type": "object",
             "required": [
                 "password",
@@ -581,7 +581,7 @@ var doc = `{
                 }
             }
         },
-        "services.MailVerifyService": {
+        "service.MailVerifyService": {
             "type": "object",
             "required": [
                 "code"
@@ -592,7 +592,7 @@ var doc = `{
                 }
             }
         },
-        "services.PostService": {
+        "service.PostService": {
             "type": "object",
             "required": [
                 "category",
@@ -613,7 +613,7 @@ var doc = `{
                 }
             }
         },
-        "services.RegisterService": {
+        "service.RegisterService": {
             "type": "object",
             "required": [
                 "email",
@@ -636,7 +636,7 @@ var doc = `{
                 }
             }
         },
-        "services.UpdateInfoService": {
+        "service.UpdateInfoService": {
             "type": "object",
             "properties": {
                 "birthday": {

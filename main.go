@@ -7,8 +7,8 @@ import (
 	"acgfate/config"
 	"acgfate/database"
 	"acgfate/router"
-	"acgfate/utils/logger"
-	"acgfate/utils/snowflake"
+	"acgfate/util/logger"
+	"acgfate/util/snowflake"
 	"github.com/gin-gonic/gin"
 )
 
