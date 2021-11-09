@@ -19,7 +19,7 @@ func InitMySQL(conf *config.MySQLConfig) (err error) {
 		conf.Port,
 		conf.DB,
 	)
-	db, err := sqlx.Open("mysql", dsn)
+	db, err = sqlx.Open("mysql", dsn)
 	if err != nil {
 		return
 	}
