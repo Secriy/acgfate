@@ -8,23 +8,26 @@ import (
 
 type UserDao struct{}
 
-const (
-	QUID = iota
-	QUname
-	QEmail
-)
-
-func (d *UserDao) QueryRow(col int, idx interface{}) (*model.User, error) {
+// QueryByUID query single row by UID
+func (d *UserDao) QueryByUID(idx interface{}) (*model.User, error) {
 	var user model.User
-	var sqlStr string
-	switch col {
-	case QUname:
-		sqlStr = "SELECT * FROM af_user WHERE username = ?"
-	case QEmail:
-		sqlStr = "SELECT * FROM af_user WHERE email = ?"
-	default:
-		sqlStr = "SELECT * FROM af_user WHERE uid = ?"
-	}
+	sqlStr := "SELECT * FROM af_user WHERE uid = ?"
+	err := db.Get(&user, sqlStr, idx)
+	return &user, err
+}
+
+// QueryByUname query single row by username
+func (d *UserDao) QueryByUname(idx interface{}) (*model.User, error) {
+	var user model.User
+	sqlStr := "SELECT * FROM af_user WHERE username = ?"
+	err := db.Get(&user, sqlStr, idx)
+	return &user, err
+}
+
+// QueryByEmail query single row by email
+func (d *UserDao) QueryByEmail(idx interface{}) (*model.User, error) {
+	var user model.User
+	sqlStr := "SELECT * FROM af_user WHERE email = ?"
 	err := db.Get(&user, sqlStr, idx)
 	return &user, err
 }
@@ -57,7 +60,7 @@ func (d *UserDao) InsertRow(userRow interface{}) error {
 		_ = tx.Commit()
 		return nil
 	}
-	return errors.New("") // TODO: 错误信息
+	return errors.New("user model incorrect")
 }
 
 func (d *UserDao) UpdateRow() {}
@@ -65,9 +68,3 @@ func (d *UserDao) UpdateRow() {}
 func (d *UserDao) DeleteRow() {}
 
 func (d *UserDao) DeleteMRow() {}
-
-// IsExists 判断是否存在字段
-func (d *UserDao) IsExists(col int, idx interface{}) bool {
-	_, err := d.QueryRow(col, idx)
-	return err == nil
-}

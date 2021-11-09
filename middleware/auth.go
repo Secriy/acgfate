@@ -26,7 +26,7 @@ func CurrentUser() gin.HandlerFunc {
 		uid := session.Get("uid")
 		if uid != nil {
 			var dao database.UserDao
-			user, err := dao.QueryRow(database.QUID, uid)
+			user, err := dao.QueryByUID(uid)
 			if err == nil {
 				c.Set("user", user)
 			}

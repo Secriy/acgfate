@@ -12,7 +12,7 @@ const EncryptCost = 12
 
 // User 用户账号信息
 type User struct {
-	UID       uint64    `db:"uid"`
+	UID       int64     `db:"uid"`
 	Username  string    `db:"username"`
 	Password  string    `db:"password"`
 	Nickname  string    `db:"nickname"`
@@ -25,7 +25,7 @@ type User struct {
 
 // UserInfo 用户个人信息
 type UserInfo struct {
-	UID       uint64    `db:"uid"`
+	UID       int64     `db:"uid"`
 	Gender    uint8     `db:"gender"`
 	Sign      string    `db:"sign"`
 	Birthday  time.Time `db:"birthday"`

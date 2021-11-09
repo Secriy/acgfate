@@ -17,7 +17,7 @@ type LoginService struct {
 // Login 用户登录服务
 func (service *LoginService) Login(c *gin.Context) sz.Response {
 	var dao database.UserDao
-	user, err := dao.QueryRow(database.QUname, service.Username)
+	user, err := dao.QueryByUname(service.Username)
 	if err != nil {
 		zap.S().Debugf("登录失败: %e", err)
 		return sz.MsgResponse(sz.Failure, "账号或密码错误")

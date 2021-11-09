@@ -21,11 +21,11 @@ func (service *RegisterService) Register() sz.Response {
 
 	var dao database.UserDao
 	// 判断用户名是否被占用
-	if dao.IsExists(database.QUname, service.Username) {
+	if _, err := dao.QueryByUname(service.Username); err == nil {
 		return sz.ErrResponse(sz.RegNameExist)
 	}
 	// 判断邮箱是否被占用
-	if dao.IsExists(database.QEmail, service.Email) {
+	if _, err := dao.QueryByEmail(service.Email); err == nil {
 		return sz.ErrResponse(sz.EmailExist)
 	}
 	// 加密密码

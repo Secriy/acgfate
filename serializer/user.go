@@ -6,7 +6,7 @@ import (
 
 // UserResponse 用户信息结构
 type UserResponse struct {
-	UID      uint64 `json:"uid"`
+	UID      int64  `json:"uid"`
 	Username string `json:"username"`
 	Nickname string `json:"nickname"`
 	Email    string `json:"email"`
