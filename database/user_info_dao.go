@@ -8,11 +8,11 @@ import (
 
 type UserInfoDao struct{}
 
-func (d *UserInfoDao) Query(idx interface{}) (*model.UserInfo, error) {
+func (d *UserInfoDao) Query(idx interface{}) (ret *model.UserInfo, err error) {
+	ret = new(model.UserInfo)
 	sqlStr := "SELECT * FROM af_user WHERE uid = ?"
-	ret := new(model.UserInfo)
-	err := db.Get(ret, sqlStr, idx)
-	return ret, err
+	err = db.Get(ret, sqlStr, idx)
+	return
 }
 
 func (d *UserInfoDao) Insert(tx *sql.Tx, uid int64) error {

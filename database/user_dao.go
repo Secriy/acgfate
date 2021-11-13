@@ -7,27 +7,27 @@ import (
 type UserDao struct{}
 
 // QueryByUID query single row by UID
-func (d *UserDao) QueryByUID(idx interface{}) (*model.User, error) {
-	var user model.User
+func (d *UserDao) QueryByUID(idx interface{}) (ret *model.User, err error) {
+	ret = new(model.User)
 	sqlStr := "SELECT * FROM af_user WHERE uid = ?"
-	err := db.Get(&user, sqlStr, idx)
-	return &user, err
+	err = db.Get(ret, sqlStr, idx)
+	return
 }
 
 // QueryByUname query single row by username
-func (d *UserDao) QueryByUname(idx interface{}) (*model.User, error) {
-	var user model.User
+func (d *UserDao) QueryByUname(idx interface{}) (ret *model.User, err error) {
+	ret = new(model.User)
 	sqlStr := "SELECT * FROM af_user WHERE username = ?"
-	err := db.Get(&user, sqlStr, idx)
-	return &user, err
+	err = db.Get(ret, sqlStr, idx)
+	return
 }
 
 // QueryByEmail query single row by email
-func (d *UserDao) QueryByEmail(idx interface{}) (*model.User, error) {
-	var user model.User
+func (d *UserDao) QueryByEmail(idx interface{}) (ret *model.User, err error) {
+	ret = new(model.User)
 	sqlStr := "SELECT * FROM af_user WHERE email = ?"
-	err := db.Get(&user, sqlStr, idx)
-	return &user, err
+	err = db.Get(ret, sqlStr, idx)
+	return
 }
 
 func (d *UserDao) Insert(user *model.User) error {
@@ -63,3 +63,13 @@ func (d *UserDao) Update() {}
 func (d *UserDao) Delete() {}
 
 func (d *UserDao) MDelete() {}
+
+// NickName 获取用户的昵称
+func NickName(uid interface{}) string {
+	dao := new(UserDao)
+	user, err := dao.QueryByUID(uid)
+	if err != nil {
+		return ""
+	}
+	return user.Nickname
+}

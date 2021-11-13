@@ -20,13 +20,13 @@ func NewCategory(cat *model.Category) Category {
 
 // NewMultiCategory 构建多个分区信息响应
 func NewMultiCategory(cat []*model.Category) []Category {
-	ret := make([]Category, len(cat))
-	for k, v := range cat {
-		ret[k] = Category{
+	ret := make([]Category, 0, len(cat))
+	for _, v := range cat {
+		ret = append(ret, Category{
 			CategoryID:   v.CategoryID,
 			CategoryName: v.CategoryName,
 			Description:  v.Description,
-		}
+		})
 	}
 	return ret
 }
