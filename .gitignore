@@ -2,6 +2,7 @@
 .idea
 test
 logs/
+tmp/
 *.log
 *.exe
 *.ps1
