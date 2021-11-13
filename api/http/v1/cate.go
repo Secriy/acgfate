@@ -15,7 +15,7 @@ func CategoryDetail(c *gin.Context) {
 		res := form.CateDetail()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ParamErrorResponse())
+		c.JSON(http.StatusOK, sz.ParamError())
 	}
 }
 
@@ -26,6 +26,6 @@ func CategoryList(c *gin.Context) {
 		res := form.CateList()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ParamErrorResponse())
+		c.JSON(http.StatusOK, sz.ParamError())
 	}
 }

@@ -1,11 +1,13 @@
 package serializer
 
 import (
+	"time"
+
 	"acgfate/model"
 )
 
-// UserResponse 用户信息结构
-type UserResponse struct {
+// User 用户信息结构
+type User struct {
 	UID      int64  `json:"uid"`
 	Username string `json:"username"`
 	Nickname string `json:"nickname"`
@@ -14,16 +16,38 @@ type UserResponse struct {
 	State    uint8  `json:"state"`
 }
 
-// BuildUserResponse 构建用户信息响应
-func BuildUserResponse(user *model.User) Response {
-	return NewResponse(CodeSuccess, UserResponse{
+// UserInfo 用户个人信息
+type UserInfo struct {
+	UID      int64     `json:"uid"`
+	Gender   uint8     `json:"gender"`
+	Sign     string    `json:"sign"`
+	Birthday time.Time `json:"birthday"`
+	Province string    `json:"province"`
+	City     string    `json:"city"`
+}
+
+// NewUser 构建用户信息
+func NewUser(user *model.User) User {
+	return User{
 		UID:      user.UID,
 		Username: user.Username,
 		Nickname: user.Nickname,
 		Email:    user.Email,
 		Avatar:   user.Avatar,
 		State:    user.State,
-	}, Msg(CodeSuccess))
+	}
+}
+
+// NewUserInfo 构建用户信息
+func NewUserInfo(userInfo *model.UserInfo) UserInfo {
+	return UserInfo{
+		UID:      userInfo.UID,
+		Gender:   userInfo.Gender,
+		Sign:     userInfo.Sign,
+		Birthday: userInfo.Birthday,
+		Province: userInfo.Province,
+		City:     userInfo.City,
+	}
 }
 
 // genderName Gender number to name

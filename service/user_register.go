@@ -29,8 +29,8 @@ func (service *UserRegisterService) UserRegister() sz.Response {
 	}
 	// 加密密码
 	if err := user.SetPassword(service.Password); err != nil {
-		zap.S().Errorf("%s: %s", sz.Msg(sz.CodePasswdEncryptErr), err)
-		return sz.ErrorResponse()
+		zap.S().Errorf("%s: %s", sz.CodePasswdEncryptErr.String(), err)
+		return sz.Error()
 	}
 	// 创建用户账号记录
 	user.Username = service.Username
@@ -38,7 +38,7 @@ func (service *UserRegisterService) UserRegister() sz.Response {
 	user.Email = service.Email
 	if err := dao.Insert(user); err != nil {
 		zap.S().Errorf("创建用户失败: %s", err)
-		return sz.ErrorResponse()
+		return sz.Error()
 	}
-	return sz.SuccessResponse()
+	return sz.Success()
 }

@@ -16,31 +16,32 @@ func NewResponse(code interface{}, data interface{}, msg string) Response {
 	}
 }
 
-// CodeResponse 错误码对应错误信息
-func CodeResponse(errCode errCode) Response {
-	return NewResponse(errCode, nil, Msg(errCode))
+// DataResponse 获取错误码及输入数据的返回
+func DataResponse(e errCode, data interface{}) Response {
+	return NewResponse(e, data, e.String())
 }
 
-// SuccessResponse 通用成功信息
-func SuccessResponse() Response {
+// CodeResponse 获取错误码对应的返回
+func CodeResponse(e errCode) Response {
+	return DataResponse(e, nil)
+}
+
+// Success 通用成功信息
+func Success() Response {
 	return CodeResponse(CodeSuccess)
 }
 
-// SuccessDataResponse 带数据的成功信息
-func SuccessDataResponse(data interface{}) Response {
-	return NewResponse(CodeSuccess, data, Msg(CodeSuccess))
-}
-
-// FailedResponse 通用失败信息，一般是客户端引起的失败
-func FailedResponse() Response {
+// Failure 通用失败信息，一般是客户端引起的失败
+func Failure() Response {
 	return CodeResponse(CodeFailure)
 }
 
-// ErrorResponse 通用错误信息，一般是服务端错误
-func ErrorResponse() Response {
+// Error 通用错误信息，一般是服务端错误
+func Error() Response {
 	return CodeResponse(CodeError)
 }
 
-func ParamErrorResponse() Response {
+// ParamError 用户输入参数错误
+func ParamError() Response {
 	return CodeResponse(CodeParamErr)
 }

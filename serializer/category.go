@@ -1,31 +1,32 @@
 package serializer
 
-import (
-	"acgfate/model"
-)
+import "acgfate/model"
 
-// CateResponse 分区响应结构
-type CateResponse struct {
-	CateID   int64  `json:"cid"`
-	CateName string `json:"cname"`
-	Desc     string `json:"desc"`
+// Category 用户账号信息
+type Category struct {
+	CategoryID   int64  `json:"category_id"`
+	CategoryName string `json:"category_name"`
+	Description  string `json:"description"`
 }
 
-// BuildCateResponse 构建分区信息响应
-func BuildCateResponse(cate *model.Category) interface{} {
-	return CateResponse{
-		CateID:   cate.CateID,
-		CateName: cate.CateName,
-		Desc:     cate.Desc,
+// NewCategory 构建分区信息响应
+func NewCategory(cate *model.Category) Category {
+	return Category{
+		CategoryID:   cate.CategoryID,
+		CategoryName: cate.CategoryName,
+		Description:  cate.Description,
 	}
 }
 
-// BuildCateMultiResponse 构建多个分区信息响应
-func BuildCateMultiResponse(cates []*model.Category) interface{} {
-	var rets []interface{}
-	for _, v := range cates {
-		cate := BuildCateResponse(v)
-		rets = append(rets, cate)
+// NewMultiCategory 构建多个分区信息响应
+func NewMultiCategory(cate []*model.Category) []Category {
+	ret := make([]Category, len(cate))
+	for k, v := range cate {
+		ret[k] = Category{
+			CategoryID:   v.CategoryID,
+			CategoryName: v.CategoryName,
+			Description:  v.Description,
+		}
 	}
-	return rets
+	return ret
 }

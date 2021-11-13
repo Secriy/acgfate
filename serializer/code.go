@@ -1,5 +1,6 @@
 package serializer
 
+// An errCode is a 32-bit error code.
 type errCode int32
 
 // 用户端错误
@@ -61,11 +62,10 @@ var codeFlags = map[errCode]string{
 	CodeMailSendErr:         "邮件发送失败",
 }
 
-// Msg 获取错误码对应错误信息
-func Msg(code errCode) string {
-	msg, ok := codeFlags[code]
-	if ok {
-		return msg
+// String 获取错误码对应错误信息
+func (e errCode) String() string {
+	if s, ok := codeFlags[e]; ok {
+		return s
 	}
 	return codeFlags[CodeError]
 }

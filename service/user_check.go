@@ -19,7 +19,7 @@ func (service *UsernameService) CheckUsername() sz.Response {
 	if _, err := dao.QueryByUname(service.Username); err == nil {
 		return sz.CodeResponse(sz.CodeRegNameExist)
 	}
-	return sz.SuccessResponse()
+	return sz.Success()
 }
 
 // CheckEmail 判断邮箱是否被占用
@@ -28,5 +28,5 @@ func (service *EmailService) CheckEmail() sz.Response {
 	if _, err := dao.QueryByEmail(service.Email); err == nil {
 		return sz.CodeResponse(sz.CodeEmailExist)
 	}
-	return sz.SuccessResponse()
+	return sz.Success()
 }

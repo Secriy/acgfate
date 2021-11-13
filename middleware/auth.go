@@ -46,7 +46,7 @@ func AuthRequired() gin.HandlerFunc {
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"code": sz.CodeAccAuthErr,
-			"msg":  sz.Msg(sz.CodeAccAuthErr),
+			"msg":  sz.CodeAccAuthErr.String(),
 		})
 		c.Abort()
 	}

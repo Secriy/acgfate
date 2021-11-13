@@ -29,7 +29,7 @@ func (service *UserLoginService) UserLogin(c *gin.Context) sz.Response {
 
 	zap.S().Infof("登录成功: %d", user.UID)
 
-	return sz.SuccessResponse()
+	return sz.Success()
 }
 
 // SetSession 保存 session
