@@ -3,6 +3,7 @@ package router
 import (
 	"fmt"
 
+	apiv1 "acgfate/api/http/v1"
 	"acgfate/config"
 	_ "acgfate/docs"
 	"acgfate/middleware"
@@ -22,15 +23,21 @@ func Init(conf *config.RedisConfig, secret string) *gin.Engine {
 	)))
 	r.Use(middleware.Cors())
 	r.Use(middleware.CurrentUser())
+
 	// Swagger
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	// Router Group
+
 	v1 := r.Group("/api/v1")
+	{
+		v1.POST("user/register", apiv1.UserRegister)    // 注册
+		v1.POST("user/login", apiv1.UserLogin)          // 登录
+		v1.GET("category/detail", apiv1.CategoryDetail) // 分区信息
+		v1.GET("category/list", apiv1.CategoryList)     // 分区列表
 
-	InitUserRouter(v1) // 初始化UserInfo路由
-	// InitTaskRouter(v1)  // 初始化任务相关路由
-	// InitCheckRouter(v1) // 初始化校验相关路由
-	// InitWordsRouter(v1) // 初始化Words路由
+		// 需要鉴权的路由组
+		v1.Use(middleware.AuthRequired())
 
+		v1.GET("user/info", apiv1.UserInfo) // 获取个人信息
+	}
 	return r
 }
