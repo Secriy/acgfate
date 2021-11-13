@@ -21,7 +21,7 @@ import (
 func UserRegister(c *gin.Context) {
 	form := new(service.UserRegisterService)
 	if err := c.ShouldBind(form); err == nil {
-		res := form.UserRegister()
+		res := form.Register()
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, sz.ParamError())
@@ -41,7 +41,7 @@ func UserRegister(c *gin.Context) {
 func UserLogin(c *gin.Context) {
 	form := new(service.UserLoginService)
 	if err := c.ShouldBind(form); err == nil {
-		res := form.UserLogin(c)
+		res := form.Login(c)
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, sz.ParamError())
@@ -59,7 +59,7 @@ func UserLogin(c *gin.Context) {
 // @Router /user/info [get]
 func UserInfo(c *gin.Context) {
 	form := new(service.UserInfoService)
-	res := form.UserInfo(c)
+	res := form.Info(c)
 	c.JSON(http.StatusOK, res)
 }
 

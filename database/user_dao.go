@@ -1,8 +1,6 @@
 package database
 
 import (
-	"errors"
-
 	"acgfate/model"
 )
 
@@ -32,35 +30,32 @@ func (d *UserDao) QueryByEmail(idx interface{}) (*model.User, error) {
 	return &user, err
 }
 
-func (d *UserDao) Insert(userRow interface{}) error {
-	if user, ok := userRow.(model.User); ok {
-		tx, err := db.Begin()
-		if err != nil {
-			_ = tx.Rollback()
-			return err
-		}
-		sqlStr := "INSERT INTO af_user(username, password, nickname, email) VALUES (?, ?, ?, ?)"
-		ret, err := tx.Exec(sqlStr, user.Username, user.Password, user.Nickname, user.Email)
-		if err != nil {
-			_ = tx.Rollback()
-			return err
-		}
-		// get last insert row id
-		uid, err := ret.LastInsertId()
-		if err != nil {
-			_ = tx.Rollback()
-			return err
-		}
-		// insert into info table
-		infoDao := UserInfoDao{}
-		if err := infoDao.Insert(tx, uid); err != nil {
-			_ = tx.Rollback()
-			return err
-		}
-		_ = tx.Commit()
-		return nil
+func (d *UserDao) Insert(user *model.User) error {
+	tx, err := db.Begin()
+	if err != nil {
+		_ = tx.Rollback()
+		return err
 	}
-	return errors.New("user model incorrect")
+	sqlStr := "INSERT INTO af_user(username, password, nickname, email) VALUES (?, ?, ?, ?)"
+	ret, err := tx.Exec(sqlStr, user.Username, user.Password, user.Nickname, user.Email)
+	if err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+	// get last insert row id
+	uid, err := ret.LastInsertId()
+	if err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+	// insert into info table
+	infoDao := UserInfoDao{}
+	if err := infoDao.Insert(tx, uid); err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+	_ = tx.Commit()
+	return nil
 }
 
 func (d *UserDao) Update() {}

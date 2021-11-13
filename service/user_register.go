@@ -15,8 +15,8 @@ type UserRegisterService struct {
 	Email    string `json:"email" binding:"required,email,min=3,max=100"`
 }
 
-// UserRegister 用户注册服务
-func (service *UserRegisterService) UserRegister() sz.Response {
+// Register 用户注册服务
+func (service *UserRegisterService) Register() sz.Response {
 	var user model.User
 	dao := new(database.UserDao)
 	// 判断用户名是否被占用
@@ -36,7 +36,7 @@ func (service *UserRegisterService) UserRegister() sz.Response {
 	user.Username = service.Username
 	user.Nickname = service.Nickname
 	user.Email = service.Email
-	if err := dao.Insert(user); err != nil {
+	if err := dao.Insert(&user); err != nil {
 		zap.S().Errorf("创建用户失败: %s", err)
 		return sz.Error()
 	}

@@ -10,13 +10,13 @@ import (
 // CategoryDetail 分区信息
 func CategoryDetail(c *gin.Context) {
 	serv := new(service.CatDetailService)
-	res := serv.CatDetail(c.Param("name"))
+	res := serv.Detail(c.Param("name"))
 	c.JSON(http.StatusOK, res)
 }
 
 // CategoryList 获取所有的分区列表
 func CategoryList(c *gin.Context) {
 	serv := new(service.CatListService)
-	res := serv.CatList()
+	res := serv.List()
 	c.JSON(http.StatusOK, res)
 }

@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-// Category 用户账号信息
+// Category 分区模型
 type Category struct {
 	ID           int64     `db:"id"`
 	CategoryID   int64     `db:"cat_id"`

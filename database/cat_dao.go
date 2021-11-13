@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	"acgfate/model"
-	"go.uber.org/zap"
 )
 
 type CatDao struct{}
@@ -14,6 +13,9 @@ func (d *CatDao) QueryByID(idx interface{}) (ret *model.Category, err error) {
 	sqlStr := "SELECT * FROM af_category WHERE cat_id = ?"
 	ret = new(model.Category)
 	err = db.Get(ret, sqlStr, idx)
+	if err == sql.ErrNoRows {
+		err = nil
+	}
 	return
 }
 
@@ -30,7 +32,6 @@ func (d *CatDao) QueryAll() (ret []*model.Category, err error) {
 	sqlStr := "SELECT * FROM  af_category"
 	err = db.Select(&ret, sqlStr)
 	if err == sql.ErrNoRows {
-		zap.S().Warn("category table empty")
 		err = nil
 	}
 	return

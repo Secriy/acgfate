@@ -10,7 +10,7 @@ import (
 // EncryptCost 加密难度
 const EncryptCost = 12
 
-// User 用户账号信息
+// User 用户账号模型
 type User struct {
 	UID       int64     `db:"uid"`
 	Username  string    `db:"username"`
@@ -23,7 +23,7 @@ type User struct {
 	UpdatedAt time.Time `db:"updated_at"`
 }
 
-// UserInfo 用户个人信息
+// UserInfo 用户个人信息模型
 type UserInfo struct {
 	UID       int64     `db:"uid"`
 	Gender    uint8     `db:"gender"`

@@ -14,8 +14,8 @@ type UserLoginService struct {
 	Password string `json:"password" binding:"required,ascii,min=8,max=16"`
 }
 
-// UserLogin 用户登录服务
-func (service *UserLoginService) UserLogin(c *gin.Context) sz.Response {
+// Login 用户登录服务
+func (service *UserLoginService) Login(c *gin.Context) sz.Response {
 	dao := new(database.UserDao)
 	user, err := dao.QueryByUname(service.Username)
 	if err != nil {

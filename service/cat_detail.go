@@ -8,8 +8,8 @@ import (
 
 type CatDetailService struct{}
 
-// CatDetail return the response of category.
-func (c *CatDetailService) CatDetail(catName string) (resp sz.Response) {
+// Detail return the response of category.
+func (c *CatDetailService) Detail(catName string) (resp sz.Response) {
 	dao := new(database.CatDao)
 	cat, err := dao.QueryByCname(catName)
 	if err != nil {
