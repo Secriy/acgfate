@@ -6,10 +6,10 @@ import (
 	"go.uber.org/zap"
 )
 
-type CateListService struct{}
+type CatListService struct{}
 
-func (c *CateListService) CateList() (resp sz.Response) {
-	dao := new(database.CateDao)
+func (c *CatListService) CatList() (resp sz.Response) {
+	dao := new(database.CatDao)
 	data, err := dao.QueryAll()
 	if err != nil {
 		zap.S().Errorf("query failed: %e", err)

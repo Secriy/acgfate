@@ -29,10 +29,10 @@ func Init(conf *config.RedisConfig, secret string) *gin.Engine {
 
 	v1 := r.Group("/api/v1")
 	{
-		v1.POST("user/register", apiv1.UserRegister)    // 注册
-		v1.POST("user/login", apiv1.UserLogin)          // 登录
-		v1.GET("category/detail", apiv1.CategoryDetail) // 分区信息
-		v1.GET("category/list", apiv1.CategoryList)     // 分区列表
+		v1.POST("user/register", apiv1.UserRegister)   // 注册
+		v1.POST("user/login", apiv1.UserLogin)         // 登录
+		v1.GET("category/:name", apiv1.CategoryDetail) // 分区信息
+		v1.GET("category/list", apiv1.CategoryList)    // 分区列表
 
 		// 需要鉴权的路由组
 		v1.Use(middleware.AuthRequired())

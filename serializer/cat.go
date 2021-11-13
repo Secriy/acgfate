@@ -10,18 +10,18 @@ type Category struct {
 }
 
 // NewCategory 构建分区信息响应
-func NewCategory(cate *model.Category) Category {
+func NewCategory(cat *model.Category) Category {
 	return Category{
-		CategoryID:   cate.CategoryID,
-		CategoryName: cate.CategoryName,
-		Description:  cate.Description,
+		CategoryID:   cat.CategoryID,
+		CategoryName: cat.CategoryName,
+		Description:  cat.Description,
 	}
 }
 
 // NewMultiCategory 构建多个分区信息响应
-func NewMultiCategory(cate []*model.Category) []Category {
-	ret := make([]Category, len(cate))
-	for k, v := range cate {
+func NewMultiCategory(cat []*model.Category) []Category {
+	ret := make([]Category, len(cat))
+	for k, v := range cat {
 		ret[k] = Category{
 			CategoryID:   v.CategoryID,
 			CategoryName: v.CategoryName,
