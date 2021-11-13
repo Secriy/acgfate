@@ -19,9 +19,9 @@ import (
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/register [post]
 func UserRegister(c *gin.Context) {
-	form := new(service.RegisterService)
+	form := new(service.UserRegisterService)
 	if err := c.ShouldBind(form); err == nil {
-		res := form.Register()
+		res := form.UserRegister()
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, sz.ParamErrorResponse())
@@ -34,14 +34,14 @@ func UserRegister(c *gin.Context) {
 // @Tags User
 // @Accept application/json
 // @Produce  application/json
-// @Param form body service.LoginService true "用户名, 密码"
+// @Param form body service.UserLoginService true "用户名, 密码"
 // @Success 0 {object} serializer.Response "msg: Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/login [post]
 func UserLogin(c *gin.Context) {
-	form := new(service.LoginService)
+	form := new(service.UserLoginService)
 	if err := c.ShouldBind(form); err == nil {
-		res := form.Login(c)
+		res := form.UserLogin(c)
 		c.JSON(http.StatusOK, res)
 	} else {
 		c.JSON(http.StatusOK, sz.ParamErrorResponse())
@@ -58,8 +58,8 @@ func UserLogin(c *gin.Context) {
 // @Failure 50000 {object} serializer.Response "msg: 查询个人信息错误"
 // @Router /user/info [get]
 func UserInfo(c *gin.Context) {
-	form := new(service.InfoService)
-	res := form.Info(c)
+	form := new(service.UserInfoService)
+	res := form.UserInfo(c)
 	c.JSON(http.StatusOK, res)
 }
 

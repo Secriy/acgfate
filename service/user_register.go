@@ -8,15 +8,15 @@ import (
 	"go.uber.org/zap"
 )
 
-type RegisterService struct {
+type UserRegisterService struct {
 	Username string `json:"username" binding:"required,alphanum,min=2,max=10"`
 	Password string `json:"password" binding:"required,ascii,min=8,max=16"`
 	Nickname string `json:"nickname" binding:"required,min=2,max=15"`
 	Email    string `json:"email" binding:"required,email,min=3,max=100"`
 }
 
-// Register 用户注册服务
-func (service *RegisterService) Register() sz.Response {
+// UserRegister 用户注册服务
+func (service *UserRegisterService) UserRegister() sz.Response {
 	var user model.User
 	dao := new(database.UserDao)
 	// 判断用户名是否被占用
@@ -36,7 +36,7 @@ func (service *RegisterService) Register() sz.Response {
 	user.Username = service.Username
 	user.Nickname = service.Nickname
 	user.Email = service.Email
-	if err := dao.InsertRow(user); err != nil {
+	if err := dao.Insert(user); err != nil {
 		zap.S().Errorf("创建用户失败: %s", err)
 		return sz.ErrorResponse()
 	}

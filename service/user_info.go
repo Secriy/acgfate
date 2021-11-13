@@ -6,10 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type InfoService struct{}
+type UserInfoService struct{}
 
-// Info 用户基本信息查询服务
-func (service *InfoService) Info(c *gin.Context) sz.Response {
+// UserInfo 用户基本信息查询服务
+func (service *UserInfoService) UserInfo(c *gin.Context) sz.Response {
 	user := model.CurrentUser(c)
 	if user == nil {
 		return sz.CodeResponse(sz.CodeAccAuthErr)

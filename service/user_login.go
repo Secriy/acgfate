@@ -9,13 +9,13 @@ import (
 	"go.uber.org/zap"
 )
 
-type LoginService struct {
+type UserLoginService struct {
 	Username string `json:"username" binding:"required,alphanum,min=2,max=10"`
 	Password string `json:"password" binding:"required,ascii,min=8,max=16"`
 }
 
-// Login 用户登录服务
-func (service *LoginService) Login(c *gin.Context) sz.Response {
+// UserLogin 用户登录服务
+func (service *UserLoginService) UserLogin(c *gin.Context) sz.Response {
 	dao := new(database.UserDao)
 	user, err := dao.QueryByUname(service.Username)
 	if err != nil {
@@ -33,7 +33,7 @@ func (service *LoginService) Login(c *gin.Context) sz.Response {
 }
 
 // SetSession 保存 session
-func (service *LoginService) SetSession(c *gin.Context, user *model.User) {
+func (service *UserLoginService) SetSession(c *gin.Context, user *model.User) {
 	s := sessions.Default(c)
 	s.Clear()
 	s.Set("uid", user.UID)

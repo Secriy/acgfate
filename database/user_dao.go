@@ -32,7 +32,7 @@ func (d *UserDao) QueryByEmail(idx interface{}) (*model.User, error) {
 	return &user, err
 }
 
-func (d *UserDao) InsertRow(userRow interface{}) error {
+func (d *UserDao) Insert(userRow interface{}) error {
 	if user, ok := userRow.(model.User); ok {
 		tx, err := db.Begin()
 		if err != nil {
@@ -53,7 +53,7 @@ func (d *UserDao) InsertRow(userRow interface{}) error {
 		}
 		// insert into info table
 		infoDao := UserInfoDao{}
-		if err := infoDao.InsertRow(tx, uid); err != nil {
+		if err := infoDao.Insert(tx, uid); err != nil {
 			_ = tx.Rollback()
 			return err
 		}
@@ -63,8 +63,8 @@ func (d *UserDao) InsertRow(userRow interface{}) error {
 	return errors.New("user model incorrect")
 }
 
-func (d *UserDao) UpdateRow() {}
+func (d *UserDao) Update() {}
 
-func (d *UserDao) DeleteRow() {}
+func (d *UserDao) Delete() {}
 
-func (d *UserDao) DeleteMRow() {}
+func (d *UserDao) MDelete() {}

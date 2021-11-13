@@ -26,6 +26,11 @@ func SuccessResponse() Response {
 	return CodeResponse(CodeSuccess)
 }
 
+// SuccessDataResponse 带数据的成功信息
+func SuccessDataResponse(data interface{}) Response {
+	return NewResponse(CodeSuccess, data, Msg(CodeSuccess))
+}
+
 // FailedResponse 通用失败信息，一般是客户端引起的失败
 func FailedResponse() Response {
 	return CodeResponse(CodeFailure)
