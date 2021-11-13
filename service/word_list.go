@@ -11,7 +11,7 @@ import (
 
 type WordListService struct{}
 
-func (w *WordListService) List(c *gin.Context) (resp sz.Response) {
+func (_ *WordListService) List(c *gin.Context) (resp sz.Response) {
 	dao := new(database.WordDao)
 	// paging
 	page, err := strconv.ParseInt(c.Query("page"), 10, 64)

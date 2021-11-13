@@ -39,8 +39,9 @@ func Init(conf *config.RedisConfig, secret string) *gin.Engine {
 		// 需要鉴权的路由组
 		v1.Use(middleware.AuthRequired())
 
-		v1.GET("user/info", apiv1.UserInfo)  // 获取个人信息
-		v1.POST("word/post", apiv1.WordPost) // 发表文字
+		v1.GET("user/info", apiv1.UserInfo)            // 获取个人信息
+		v1.POST("word/post", apiv1.WordPost)           // 发表文字
+		v1.DELETE("word/:id/delete", apiv1.WordDelete) // 发表文字
 	}
 	return r
 }

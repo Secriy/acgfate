@@ -32,7 +32,7 @@
                     "0": {
                         "description": "msg: Success",
                         "schema": {
-                            "$ref": "#/definitions/serializer.UserResponse"
+                            "$ref": "#/definitions/serializer.User"
                         }
                     },
                     "50000": {
@@ -64,7 +64,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.LoginService"
+                            "$ref": "#/definitions/service.UserLoginService"
                         }
                     }
                 ],
@@ -104,7 +104,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.RegisterService"
+                            "$ref": "#/definitions/service.UserRegisterService"
                         }
                     }
                 ],
@@ -130,17 +130,15 @@
             "type": "object",
             "properties": {
                 "code": {
-                    "type": "object"
+                    "type": "integer"
                 },
-                "data": {
-                    "type": "object"
-                },
+                "data": {},
                 "msg": {
                     "type": "string"
                 }
             }
         },
-        "serializer.UserResponse": {
+        "serializer.User": {
             "type": "object",
             "properties": {
                 "avatar": {
@@ -163,7 +161,7 @@
                 }
             }
         },
-        "service.LoginService": {
+        "service.UserLoginService": {
             "type": "object",
             "required": [
                 "password",
@@ -178,7 +176,7 @@
                 }
             }
         },
-        "service.RegisterService": {
+        "service.UserRegisterService": {
             "type": "object",
             "required": [
                 "email",

@@ -8,7 +8,7 @@ import (
 
 type CatListService struct{}
 
-func (c *CatListService) List() (resp sz.Response) {
+func (_ *CatListService) List() (resp sz.Response) {
 	dao := new(database.CatDao)
 	data, err := dao.QueryAll()
 	if err != nil {

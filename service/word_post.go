@@ -15,14 +15,14 @@ type WordPostService struct {
 	Content  string `json:"content" binding:"required,min=1,max=1024"`
 }
 
-func (w *WordPostService) Post(c *gin.Context) sz.Response {
+func (service *WordPostService) Post(c *gin.Context) sz.Response {
 	// get current user (author of word)
 	user := model.CurrentUser(c)
 	if user == nil {
 		return sz.CodeResponse(sz.CodeAccAuthErr)
 	}
 	// check if the category exists.
-	if cat, err := new(database.CatDao).QueryByID(w.Category); cat == nil && err == nil {
+	if cat, err := new(database.CatDao).QueryByID(service.Category); cat == nil && err == nil {
 		// non-exists
 		return sz.Failure()
 	} else if err != nil {
@@ -33,9 +33,9 @@ func (w *WordPostService) Post(c *gin.Context) sz.Response {
 	word := model.Word{
 		Wid:     snowflake.Generate(),
 		Aid:     user.UID,
-		CatID:   w.Category,
-		Title:   w.Title,
-		Content: w.Content,
+		CatID:   service.Category,
+		Title:   service.Title,
+		Content: service.Content,
 	}
 	dao := new(database.WordDao)
 	err := dao.Insert(&word)

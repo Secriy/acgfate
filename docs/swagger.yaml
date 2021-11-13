@@ -3,13 +3,12 @@ definitions:
   serializer.Response:
     properties:
       code:
-        type: object
-      data:
-        type: object
+        type: integer
+      data: {}
       msg:
         type: string
     type: object
-  serializer.UserResponse:
+  serializer.User:
     properties:
       avatar:
         type: string
@@ -24,7 +23,7 @@ definitions:
       username:
         type: string
     type: object
-  service.LoginService:
+  service.UserLoginService:
     properties:
       password:
         type: string
@@ -34,7 +33,7 @@ definitions:
     - password
     - username
     type: object
-  service.RegisterService:
+  service.UserRegisterService:
     properties:
       email:
         type: string
@@ -72,7 +71,7 @@ paths:
         "0":
           description: 'msg: Success'
           schema:
-            $ref: '#/definitions/serializer.UserResponse'
+            $ref: '#/definitions/serializer.User'
         "50000":
           description: 'msg: 查询个人信息错误'
           schema:
@@ -91,7 +90,7 @@ paths:
         name: form
         required: true
         schema:
-          $ref: '#/definitions/service.LoginService'
+          $ref: '#/definitions/service.UserLoginService'
       produces:
       - application/json
       responses:
@@ -117,7 +116,7 @@ paths:
         name: form
         required: true
         schema:
-          $ref: '#/definitions/service.RegisterService'
+          $ref: '#/definitions/service.UserRegisterService'
       produces:
       - application/json
       responses:

@@ -10,7 +10,7 @@ import (
 // CategoryDetail 分区信息
 func CategoryDetail(c *gin.Context) {
 	serv := new(service.CatDetailService)
-	res := serv.Detail(c.Param("name"))
+	res := serv.Detail(c)
 	c.JSON(http.StatusOK, res)
 }
 

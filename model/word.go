@@ -14,3 +14,8 @@ type Word struct {
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 }
+
+const (
+	StatusWordNormal  = 0
+	StatusWordDeleted = 2
+)
