@@ -1,0 +1,45 @@
+name: "ACG.Fate"
+version: 0.0.0
+mode: "debug"
+port: 3000
+session_secret: "hello"
+start_time: "2021-01-01"
+machine_id: 0
+
+# Logging
+log:
+  level: "debug"
+  file: "./logs/test.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+
+# MySQL
+mysql:
+  host: ""
+  port: 3306
+  user: ""
+  passwd: ""
+  db: ""
+  max_open_conns: 200
+  max_idle_conns: 10
+
+# Redis Server
+redis:
+  host: "localhost"
+  port: 6379
+  passwd:
+  db: 0
+  pool_size: 100
+
+# JWT
+jwt:
+  secret: ""
+  expire_duration: 200
+
+# Email
+email:
+  stmp: ""
+  port:
+  passwd: ""
+  sender: ""

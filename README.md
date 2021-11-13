@@ -33,5 +33,7 @@ acgfate.com 是一个基于 [gin](https://github.com/gin-gonic/gin) 实现的论
 
 ## TODO
 
-- 更新邮箱时更新验证状态
+- 优化 SQL 语句
+- 参数校验
+- 记录日志
 - 实现审核机制

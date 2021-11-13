@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	sz "acgfate/serializer"
-	"acgfate/services"
+	"acgfate/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,17 +14,17 @@ import (
 // @Tags User
 // @Accept application/json
 // @Produce  application/json
-// @Param form body services.RegisterService true "用户名, 密码, 邮箱, 昵称"
+// @Param form body service.RegisterService true "用户名, 密码, 邮箱, 昵称"
 // @Success 0 {object} serializer.Response "msg: Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/register [post]
 func UserRegister(c *gin.Context) {
-	var form services.RegisterService
-	if err := c.ShouldBind(&form); err == nil {
+	form := new(service.UserRegisterService)
+	if err := c.ShouldBind(form); err == nil {
 		res := form.Register()
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, err.Error())
+		c.JSON(http.StatusOK, sz.ParamError())
 	}
 }
 
@@ -34,17 +34,17 @@ func UserRegister(c *gin.Context) {
 // @Tags User
 // @Accept application/json
 // @Produce  application/json
-// @Param form body services.LoginService true "用户名, 密码"
-// @Success 0 {object} serializer.LoginResponse "msg: Success"
+// @Param form body service.UserLoginService true "用户名, 密码"
+// @Success 0 {object} serializer.Response "msg: Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/login [post]
 func UserLogin(c *gin.Context) {
-	var form services.LoginService
-	if err := c.ShouldBind(&form); err == nil {
-		res := form.Login()
+	form := new(service.UserLoginService)
+	if err := c.ShouldBind(form); err == nil {
+		res := form.Login(c)
 		c.JSON(http.StatusOK, res)
 	} else {
-		c.JSON(http.StatusOK, sz.ParmErr())
+		c.JSON(http.StatusOK, sz.ParamError())
 	}
 }
 
@@ -54,11 +54,11 @@ func UserLogin(c *gin.Context) {
 // @Tags User
 // @Produce  application/json
 // @Param Authorization header string true "用户令牌"
-// @Success 0 {object} serializer.BasicInfoResponse "msg: Success"
+// @Success 0 {object} serializer.UserResponse "msg: Success"
 // @Failure 50000 {object} serializer.Response "msg: 查询个人信息错误"
 // @Router /user/info [get]
 func UserInfo(c *gin.Context) {
-	var form services.InfoService
+	form := new(service.UserInfoService)
 	res := form.Info(c)
 	c.JSON(http.StatusOK, res)
 }
@@ -70,16 +70,16 @@ func UserInfo(c *gin.Context) {
 // @Accept application/json
 // @Produce  application/json
 // @Param Authorization header string true "用户令牌"
-// @Param form body services.UpdateInfoService true "用户信息"
+// @Param form body service.UpdateInfoService true "用户信息"
 // @Success 0 {object} serializer.BasicInfoResponse "msg: "Success"
 // @Failure 30001 {object} serializer.Response "msg: 参数错误"
 // @Router /user/update [put]
-func UserInfoUpdate(c *gin.Context) {
-	var form services.UpdateInfoService
-	if err := c.ShouldBind(&form); err == nil {
-		res := form.Update(c)
-		c.JSON(http.StatusOK, res)
-	} else {
-		c.JSON(http.StatusOK, sz.ParmErr())
-	}
-}
+// func UserInfoUpdate(c *gin.Context) {
+// 	var form service.UpdateInfoService
+// 	if err := c.ShouldBind(&form); err == nil {
+// 		res := form.Update(c)
+// 		c.JSON(http.StatusOK, res)
+// 	} else {
+// 		c.JSON(http.StatusOK, sz.ParamErr())
+// 	}
+// }
