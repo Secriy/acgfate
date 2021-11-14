@@ -15,3 +15,8 @@ func TimestampToTime(timeStr string) time.Time {
 func TimeFormat(tm time.Time) string {
 	return tm.Format("2006-01-02 15:04:05")
 }
+
+// DateToday return the date string today.
+func DateToday() string {
+	return time.Now().Format("20060102")
+}

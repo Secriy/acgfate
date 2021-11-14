@@ -15,6 +15,7 @@ type Word struct {
 	Category    string `json:"category"`
 	Title       string `json:"title"`
 	Content     string `json:"content"`
+	Likes       string `json:"likes"`
 	CreatedTime string `json:"created_time"`
 	EditedTime  string `json:"edited_time"`
 }
@@ -26,10 +27,11 @@ func NewWord(word *model.Word) (ret Word) {
 		Category:    database.CatName(word.CatID),
 		Title:       word.Title,
 		Content:     word.Content,
+		Likes:       strconv.FormatInt(word.Likes, 10),
 		CreatedTime: util.TimeFormat(word.CreatedAt),
 		EditedTime:  util.TimeFormat(word.UpdatedAt),
 	}
-	if word.Status == model.StatusWordDeleted {
+	if word.IsDeleted() {
 		ret.Title = "已被删除"
 		ret.Content = "已被删除"
 	}

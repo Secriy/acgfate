@@ -42,3 +42,21 @@ func WordDelete(c *gin.Context) {
 	res := serv.Delete(c)
 	c.JSON(http.StatusOK, res)
 }
+
+func WordLike(c *gin.Context) {
+	serv := new(service.WordLikeService)
+	res := serv.Like(c)
+	c.JSON(http.StatusOK, res)
+}
+
+func WordUnlike(c *gin.Context) {
+	serv := new(service.WordLikeService)
+	res := serv.Unlike(c)
+	c.JSON(http.StatusOK, res)
+}
+
+func WordTrend(c *gin.Context) {
+	serv := new(service.WordLikeService)
+	res := serv.Trend(c)
+	c.JSON(http.StatusOK, res)
+}

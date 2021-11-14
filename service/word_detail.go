@@ -1,28 +1,26 @@
 package service
 
 import (
+	"acgfate/cache"
 	"acgfate/database"
-	"acgfate/model"
 	sz "acgfate/serializer"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 type WordDetailService struct{}
 
 func (_ *WordDetailService) Detail(c *gin.Context) (resp sz.Response) {
 	dao := new(database.WordDao)
-	wid := c.Param("id")
-	word, err := dao.QueryByID(wid)
+	word, err := dao.QueryByID(c.Param("id"))
 	if err != nil {
-		zap.S().Warnf("get detail of %d error: %e", wid, err)
-		return sz.Failure()
-	}
-	if word.Status == model.StatusWordDeleted {
-		// word have been deleted
+		return sz.Error()
+	} else if word == nil {
+		return sz.CodeResponse(sz.CodeWordNotExists)
+	} else if word.IsDeleted() {
 		return sz.CodeResponse(sz.CodeWordDeleted)
 	}
 	resp = sz.Success()
+	word.Likes = new(cache.WordDao).Likes(c, word.Wid) // update data from cache
 	resp.Data = sz.NewWord(word)
 	return
 }

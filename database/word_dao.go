@@ -14,7 +14,7 @@ func (w *WordDao) QueryByID(wid interface{}) (ret *model.Word, err error) {
 	sqlStr := `SELECT * FROM  af_word WHERE wid = ?`
 	err = db.Get(ret, sqlStr, wid)
 	if err == sql.ErrNoRows {
-		err = nil
+		ret, err = nil, nil
 	}
 	return
 }
@@ -24,7 +24,7 @@ func (w *WordDao) MQuery(offset, limit int64) (ret []*model.Word, err error) {
 	sqlStr := `SELECT * FROM  af_word LIMIT ?,?`
 	err = db.Select(&ret, sqlStr, offset*limit, limit)
 	if err == sql.ErrNoRows {
-		err = nil
+		ret, err = nil, nil
 	}
 	return
 }
@@ -34,7 +34,7 @@ func (w *WordDao) MQueryByAuthor(uid interface{}, offset, limit int64) (ret []*m
 	sqlStr := `SELECT * FROM  af_word WHERE aid = ? LIMIT ?,?`
 	err = db.Select(&ret, sqlStr, uid, offset*limit, limit)
 	if err == sql.ErrNoRows {
-		err = nil
+		ret, err = nil, nil
 	}
 	return
 }
@@ -44,7 +44,7 @@ func (w *WordDao) MQueryByCat(catID, offset, limit int64) (ret []*model.Word, er
 	sqlStr := `SELECT * FROM  af_word WHERE cat_id = ? LIMIT ?,?`
 	err = db.Select(&ret, sqlStr, catID, offset*limit, limit)
 	if err == sql.ErrNoRows {
-		err = nil
+		ret, err = nil, nil
 	}
 	return
 }

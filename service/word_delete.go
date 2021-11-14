@@ -14,16 +14,13 @@ func (_ *WordDeleteService) Delete(c *gin.Context) (resp sz.Response) {
 	word, err := dao.QueryByID(c.Param("id"))
 	if err != nil {
 		return sz.Error()
-	}
-	if word == nil {
-		return sz.Failure()
-	}
-	// check if already deleted
-	if word.Status == model.StatusWordDeleted {
+	} else if word == nil {
+		return sz.CodeResponse(sz.CodeWordNotExists)
+	} else if word.IsDeleted() {
 		return sz.CodeResponse(sz.CodeWordDeleted)
 	}
-	// get current user (author of word)
 
+	// get current user (author of word)
 	if user := model.CurrentUser(c); user == nil {
 		return sz.CodeResponse(sz.CodeAccAuthErr)
 	} else if user.UID != word.Aid {
