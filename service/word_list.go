@@ -1,57 +1,70 @@
 package service
 
 import (
-	"strconv"
-
+	"acgfate/cache"
 	"acgfate/database"
+	"acgfate/model"
 	sz "acgfate/serializer"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
-type WordListService struct{}
+const (
+	DefaultPage = 1
+	DefaultSize = 10
+)
 
-func (w *WordListService) List(c *gin.Context) (resp sz.Response) {
+type WordListService struct {
+	Page     int64 `json:"page" form:"page"`
+	Size     int64 `json:"size" form:"size"`
+	Author   int64 `json:"author" form:"author"`
+	Category int64 `json:"category" form:"category"`
+}
+
+func (s *WordListService) List(c *gin.Context) (resp sz.Response) {
 	dao := new(database.WordDao)
-	// paging
-	page, err := strconv.ParseInt(c.Query("page"), 10, 64)
-	if err != nil {
-		page = 1 // default offset
+	// default paging
+	if s.Page == 0 {
+		s.Page = DefaultPage
 	}
-	number, err := strconv.ParseInt(c.Query("number"), 10, 64)
-	if err != nil {
-		number = 10 // default limit
+	if s.Size == 0 {
+		s.Size = DefaultSize
 	}
 	// query by specific author or category,
 	// if both exists, query using author.
-	author, _ := strconv.ParseInt(c.Query("author"), 10, 64)
-	category, _ := strconv.ParseInt(c.Query("category"), 10, 64)
-
 	resp = sz.Success()
-	if author != 0 {
+	if s.Author != 0 {
 		// query by author
-		zap.S().Info(page)
-		words, err := dao.MQueryByAuthor(author, page-1, number)
+		words, err := dao.MQueryByAuthor(s.Author, s.Page-1, s.Size)
 		if err != nil {
 			return sz.Error()
 		}
+		updateLikes(c, words)
 		resp.Data = sz.NewMultiWord(words)
 		return
 	}
-	if category != 0 {
+	if s.Category != 0 {
 		// query by category
-		words, err := dao.MQueryByCat(category, page-1, number)
+		words, err := dao.MQueryByCat(s.Category, s.Page-1, s.Size)
 		if err != nil {
 			return sz.Error()
 		}
+		updateLikes(c, words)
 		resp.Data = sz.NewMultiWord(words)
 		return
 	}
 	// without specific author and category, query form all the data.
-	words, err := dao.MQuery(page-1, number)
+	words, err := dao.MQuery(s.Page-1, s.Size)
 	if err != nil {
 		return sz.Error()
 	}
+	updateLikes(c, words)
 	resp.Data = sz.NewMultiWord(words)
 	return
+}
+
+// updateLikes use data from cache to cover the old data.
+func updateLikes(c *gin.Context, words []*model.Word) {
+	for _, v := range words {
+		v.UpdateLikes(new(cache.WordDao).Likes(c, v.Wid))
+	}
 }

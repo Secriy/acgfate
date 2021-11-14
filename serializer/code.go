@@ -20,6 +20,10 @@ const (
 	CodeAccNotVerify        errCode = 40032 // 账号邮箱未验证
 	CodeAccBanErr           errCode = 40033 // 账号被封禁
 	CodeAccSilenceErr       errCode = 40034 // 账号被禁言
+	CodeWordNotExists       errCode = 40410 // 文字不存在
+	CodeWordDeleted         errCode = 40411 // 文字已被删除
+	CodeWordDupLiked        errCode = 40500 // 重复点赞
+	CodeWordNotLiked        errCode = 40501 // 没有点赞
 )
 
 // 服务端错误
@@ -60,6 +64,10 @@ var codeFlags = map[errCode]string{
 	CodePasswdEncryptErr:    "密码加密失败",
 	CodeTokenGenerateErr:    "Token生成失败",
 	CodeMailSendErr:         "邮件发送失败",
+	CodeWordNotExists:       "文字不存在",
+	CodeWordDeleted:         "文字已被删除",
+	CodeWordDupLiked:        "重复点赞",
+	CodeWordNotLiked:        "没有点赞",
 }
 
 // String 获取错误码对应错误信息

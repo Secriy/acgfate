@@ -35,12 +35,16 @@ func Init(conf *config.RedisConfig, secret string) *gin.Engine {
 		v1.GET("category/list", apiv1.CategoryList)    // 分区列表
 		v1.GET("word/list", apiv1.WordList)            // 文字列表
 		v1.GET("word/:id", apiv1.WordDetail)           // 文字详情
+		v1.GET("word/trend", apiv1.WordTrend)          // 排行榜
 
 		// 需要鉴权的路由组
 		v1.Use(middleware.AuthRequired())
 
-		v1.GET("user/info", apiv1.UserInfo)  // 获取个人信息
-		v1.POST("word/post", apiv1.WordPost) // 发表文字
+		v1.GET("user/info", apiv1.UserInfo)            // 获取个人信息
+		v1.POST("word/post", apiv1.WordPost)           // 发表文字
+		v1.DELETE("word/:id/delete", apiv1.WordDelete) // 发表文字
+		v1.PUT("word/:id/like", apiv1.WordLike)        // 给文字点赞
+		v1.DELETE("word/:id/like", apiv1.WordUnlike)   // 给文字取消点赞
 	}
 	return r
 }

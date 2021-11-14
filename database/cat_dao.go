@@ -14,7 +14,7 @@ func (d *CatDao) QueryByID(idx interface{}) (ret *model.Category, err error) {
 	sqlStr := "SELECT * FROM af_category WHERE cat_id = ?"
 	err = db.Get(ret, sqlStr, idx)
 	if err == sql.ErrNoRows {
-		err = nil
+		ret, err = nil, nil
 	}
 	return
 }
@@ -32,7 +32,7 @@ func (d *CatDao) QueryAll() (ret []*model.Category, err error) {
 	sqlStr := "SELECT * FROM  af_category"
 	err = db.Select(&ret, sqlStr)
 	if err == sql.ErrNoRows {
-		err = nil
+		ret, err = nil, nil
 	}
 	return
 }

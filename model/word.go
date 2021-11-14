@@ -11,6 +11,21 @@ type Word struct {
 	Status    int64     `db:"status"`
 	Title     string    `db:"title"`
 	Content   string    `db:"content"`
+	Likes     int64     `db:"likes"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
+}
+
+const (
+	StatusWordNormal  = 0
+	StatusWordDeleted = 2
+)
+
+// IsDeleted return if word have been deleted.
+func (w *Word) IsDeleted() bool {
+	return w.Status == StatusWordDeleted
+}
+
+func (w *Word) UpdateLikes(val int64) {
+	w.Likes = val
 }

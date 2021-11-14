@@ -13,9 +13,13 @@ import (
 )
 
 // @title ACG.Fate API
-// @version 0.2.1
+// @version 0.3.0
 // @description The RESTFul API of Server
-// @host 127.0.0.1:3000
+// @contact.name Secriy
+// @contact.url https://secriy.com/
+// @contact.email secriyal@gmail.com
+// @license.name MIT
+// @host localhost:3000
 // @BasePath /api/v1
 func main() {
 	if err := config.Init(); err != nil {

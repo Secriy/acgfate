@@ -1,6 +1,7 @@
 package serializer
 
 import (
+	"strconv"
 	"time"
 
 	"acgfate/model"
@@ -8,7 +9,7 @@ import (
 
 // User 用户信息结构
 type User struct {
-	UID      int64  `json:"uid"`
+	UID      string `json:"uid"`
 	Username string `json:"username"`
 	Nickname string `json:"nickname"`
 	Email    string `json:"email"`
@@ -18,7 +19,7 @@ type User struct {
 
 // UserInfo 用户个人信息
 type UserInfo struct {
-	UID      int64     `json:"uid"`
+	UID      string    `json:"uid"`
 	Gender   uint8     `json:"gender"`
 	Sign     string    `json:"sign"`
 	Birthday time.Time `json:"birthday"`
@@ -29,7 +30,7 @@ type UserInfo struct {
 // NewUser 构建用户信息
 func NewUser(user *model.User) User {
 	return User{
-		UID:      user.UID,
+		UID:      strconv.FormatInt(user.UID, 10),
 		Username: user.Username,
 		Nickname: user.Nickname,
 		Email:    user.Email,
@@ -41,7 +42,7 @@ func NewUser(user *model.User) User {
 // NewUserInfo 构建用户信息
 func NewUserInfo(userInfo *model.UserInfo) UserInfo {
 	return UserInfo{
-		UID:      userInfo.UID,
+		UID:      strconv.FormatInt(userInfo.UID, 10),
 		Gender:   userInfo.Gender,
 		Sign:     userInfo.Sign,
 		Birthday: userInfo.Birthday,

@@ -1,15 +1,44 @@
 basePath: /api/v1
 definitions:
+  serializer.Category:
+    properties:
+      category_id:
+        type: string
+      category_name:
+        type: string
+      description:
+        type: string
+    type: object
   serializer.Response:
     properties:
       code:
-        type: object
-      data:
-        type: object
+        type: integer
+      data: {}
       msg:
         type: string
     type: object
-  serializer.UserResponse:
+  serializer.Trend:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      content:
+        type: string
+      created_time:
+        type: string
+      edited_time:
+        type: string
+      likes:
+        type: string
+      rank:
+        type: integer
+      title:
+        type: string
+      wid:
+        type: string
+    type: object
+  serializer.User:
     properties:
       avatar:
         type: string
@@ -20,11 +49,30 @@ definitions:
       state:
         type: integer
       uid:
-        type: integer
+        type: string
       username:
         type: string
     type: object
-  service.LoginService:
+  serializer.Word:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      content:
+        type: string
+      created_time:
+        type: string
+      edited_time:
+        type: string
+      likes:
+        type: string
+      title:
+        type: string
+      wid:
+        type: string
+    type: object
+  service.UserLoginService:
     properties:
       password:
         type: string
@@ -34,7 +82,7 @@ definitions:
     - password
     - username
     type: object
-  service.RegisterService:
+  service.UserRegisterService:
     properties:
       email:
         type: string
@@ -50,34 +98,113 @@ definitions:
     - password
     - username
     type: object
-host: 127.0.0.1:3000
+  service.WordListService:
+    properties:
+      author:
+        type: integer
+      category:
+        type: integer
+      page:
+        type: integer
+      size:
+        type: integer
+    type: object
+  service.WordPostService:
+    properties:
+      category:
+        type: integer
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - category
+    - content
+    - title
+    type: object
+host: localhost:3000
 info:
-  contact: {}
+  contact:
+    email: secriyal@gmail.com
+    name: Secriy
+    url: https://secriy.com/
   description: The RESTFul API of Server
+  license:
+    name: MIT
   title: ACG.Fate API
-  version: 0.2.1
+  version: 0.3.0
 paths:
-  /user/info:
+  /category/{name}:
     get:
-      description: 用户个人信息接口
+      description: 分区信息接口
       parameters:
-      - description: 用户令牌
-        in: header
-        name: Authorization
+      - description: 分区名称
+        in: path
+        name: name
         required: true
         type: string
       produces:
       - application/json
       responses:
         "0":
-          description: 'msg: Success'
+          description: 成功
           schema:
-            $ref: '#/definitions/serializer.UserResponse'
-        "50000":
-          description: 'msg: 查询个人信息错误'
+            $ref: '#/definitions/serializer.Category'
+        "40000":
+          description: 操作错误
           schema:
             $ref: '#/definitions/serializer.Response'
-      summary: 用户个人信息
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 分区信息接口
+      tags:
+      - Category
+  /category/list:
+    get:
+      description: 分区信息接口
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/serializer.Category'
+              type: array
+            type: array
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 分区信息接口
+      tags:
+      - Category
+  /user/info:
+    get:
+      description: 用户个人信息，要求登录
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            $ref: '#/definitions/serializer.User'
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 用户个人信息接口
       tags:
       - User
   /user/login:
@@ -88,22 +215,26 @@ paths:
       parameters:
       - description: 用户名, 密码
         in: body
-        name: form
+        name: login
         required: true
         schema:
-          $ref: '#/definitions/service.LoginService'
+          $ref: '#/definitions/service.UserLoginService'
       produces:
       - application/json
       responses:
         "0":
-          description: 'msg: Success'
+          description: 成功
           schema:
             $ref: '#/definitions/serializer.Response'
-        "30001":
-          description: 'msg: 参数错误'
+        "40000":
+          description: 操作错误
           schema:
             $ref: '#/definitions/serializer.Response'
-      summary: 用户登录
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 用户登录接口
       tags:
       - User
   /user/register:
@@ -114,22 +245,221 @@ paths:
       parameters:
       - description: 用户名, 密码, 邮箱, 昵称
         in: body
-        name: form
+        name: register
         required: true
         schema:
-          $ref: '#/definitions/service.RegisterService'
+          $ref: '#/definitions/service.UserRegisterService'
       produces:
       - application/json
       responses:
         "0":
-          description: 'msg: Success'
+          description: 成功
           schema:
             $ref: '#/definitions/serializer.Response'
-        "30001":
-          description: 'msg: 参数错误'
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
           schema:
             $ref: '#/definitions/serializer.Response'
       summary: 用户注册
       tags:
       - User
+  /word/{wid}:
+    get:
+      description: 文字详情接口，展示文字的相关信息
+      parameters:
+      - description: 文字ID
+        in: path
+        name: wid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/serializer.Word'
+              type: array
+            type: array
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 文字详情接口，展示文字的相关信息
+      tags:
+      - Word
+  /word/{wid}/delete:
+    delete:
+      description: 文字删除接口，删除一个文字
+      parameters:
+      - description: 文字ID
+        in: path
+        name: wid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 文字删除接口，删除一个文字
+      tags:
+      - Word
+  /word/{wid}/like:
+    delete:
+      description: 文字取消点赞接口
+      parameters:
+      - description: 文字ID
+        in: path
+        name: wid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 文字取消点赞接口
+      tags:
+      - Word
+    put:
+      description: 文字点赞接口
+      parameters:
+      - description: 文字ID
+        in: path
+        name: wid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 文字点赞接口
+      tags:
+      - Word
+  /word/list:
+    get:
+      consumes:
+      - application/json
+      description: 文字列表接口，展示多个文字的相关信息，支持分页查询，按用户ID、分区ID查询
+      parameters:
+      - description: 分页/用户/分区
+        in: body
+        name: param
+        schema:
+          $ref: '#/definitions/service.WordListService'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/serializer.Word'
+              type: array
+            type: array
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 文字列表接口，展示多个文字的相关信息
+      tags:
+      - Word
+  /word/post:
+    post:
+      consumes:
+      - application/json
+      description: 文字投稿接口
+      parameters:
+      - description: 投稿信息
+        in: body
+        name: word
+        required: true
+        schema:
+          $ref: '#/definitions/service.WordPostService'
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 文字投稿接口
+      tags:
+      - Word
+  /word/trend:
+    get:
+      description: 文字热度趋势接口
+      produces:
+      - application/json
+      responses:
+        "0":
+          description: 成功
+          schema:
+            $ref: '#/definitions/serializer.Trend'
+        "40000":
+          description: 操作错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+        "50000":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/serializer.Response'
+      summary: 文字热度趋势接口
+      tags:
+      - Word
 swagger: "2.0"
