@@ -16,26 +16,26 @@ type UserRegisterService struct {
 }
 
 // Register 用户注册服务
-func (service *UserRegisterService) Register() sz.Response {
+func (s *UserRegisterService) Register() sz.Response {
 	var user model.User
 	dao := new(database.UserDao)
 	// 判断用户名是否被占用
-	if _, err := dao.QueryByUname(service.Username); err == nil {
+	if _, err := dao.QueryByUname(s.Username); err == nil {
 		return sz.CodeResponse(sz.CodeRegNameExist)
 	}
 	// 判断邮箱是否被占用
-	if _, err := dao.QueryByEmail(service.Email); err == nil {
+	if _, err := dao.QueryByEmail(s.Email); err == nil {
 		return sz.CodeResponse(sz.CodeEmailExist)
 	}
 	// 加密密码
-	if err := user.SetPassword(service.Password); err != nil {
+	if err := user.SetPassword(s.Password); err != nil {
 		zap.S().Errorf("%s: %s", sz.CodePasswdEncryptErr.String(), err)
 		return sz.Error()
 	}
 	// 创建用户账号记录
-	user.Username = service.Username
-	user.Nickname = service.Nickname
-	user.Email = service.Email
+	user.Username = s.Username
+	user.Nickname = s.Nickname
+	user.Email = s.Email
 	if err := dao.Insert(&user); err != nil {
 		zap.S().Errorf("创建用户失败: %s", err)
 		return sz.Error()

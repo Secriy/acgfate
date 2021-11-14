@@ -55,11 +55,11 @@ func (_ *WordLikeService) Unlike(c *gin.Context) (resp sz.Response) {
 		return sz.CodeResponse(sz.CodeAccAuthErr) // not login
 	}
 
-	rdao := new(cache.WordDao)
-	if !rdao.IsLiked(c, wid, user.UID) {
+	rDao := new(cache.WordDao)
+	if !rDao.IsLiked(c, wid, user.UID) {
 		return sz.CodeResponse(sz.CodeWordNotLiked) // already liked
 	}
-	rdao.Unlike(c, wid, user.UID)
+	rDao.Unlike(c, wid, user.UID)
 
 	resp = sz.Success()
 	return
@@ -67,15 +67,15 @@ func (_ *WordLikeService) Unlike(c *gin.Context) (resp sz.Response) {
 
 func (_ *WordLikeService) Trend(c *gin.Context) (resp sz.Response) {
 	dao := new(database.WordDao)
-	rdao := new(cache.WordDao)
-	trend := rdao.Trend(c) // string slice
+	rDao := new(cache.WordDao)
+	trend := rDao.Trend(c) // string slice
 	words := make([]*model.Word, 0, len(trend))
 	for _, v := range trend {
 		word, err := dao.QueryByID(v)
 		if err != nil || word == nil {
 			continue
 		}
-		word.Likes = rdao.Likes(c, v)
+		word.UpdateLikes(rDao.Likes(c, v))
 		words = append(words, word)
 	}
 	resp = sz.Success()

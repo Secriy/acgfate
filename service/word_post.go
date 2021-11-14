@@ -15,30 +15,27 @@ type WordPostService struct {
 	Content  string `json:"content" binding:"required,min=1,max=1024"`
 }
 
-func (service *WordPostService) Post(c *gin.Context) sz.Response {
-	// get current user (author of word)
+func (s *WordPostService) Post(c *gin.Context) sz.Response {
+	// get current user (author of word).
 	user := model.CurrentUser(c)
 	if user == nil {
 		return sz.CodeResponse(sz.CodeAccAuthErr)
 	}
 	// check if the category exists.
-	if cat, err := new(database.CatDao).QueryByID(service.Category); cat == nil && err == nil {
-		// non-exists
-		return sz.Failure()
+	if cat, err := new(database.CatDao).QueryByID(s.Category); cat == nil && err == nil {
+		return sz.Failure() // not exists
 	} else if err != nil {
-		// other errors, maybe from database
 		zap.S().Warnf("query error: %e", err)
-		return sz.Error()
-	}
-	word := model.Word{
-		Wid:     snowflake.Generate(),
-		Aid:     user.UID,
-		CatID:   service.Category,
-		Title:   service.Title,
-		Content: service.Content,
+		return sz.Error() // other errors, maybe from database
 	}
 	dao := new(database.WordDao)
-	err := dao.Insert(&word)
+	err := dao.Insert(&model.Word{
+		Wid:     snowflake.Generate(),
+		Aid:     user.UID,
+		CatID:   s.Category,
+		Title:   s.Title,
+		Content: s.Content,
+	})
 	if err != nil {
 		zap.S().Errorf("create word failed: %s", err)
 		return sz.Error()

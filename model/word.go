@@ -25,3 +25,7 @@ const (
 func (w *Word) IsDeleted() bool {
 	return w.Status == StatusWordDeleted
 }
+
+func (w *Word) UpdateLikes(val int64) {
+	w.Likes = val
+}

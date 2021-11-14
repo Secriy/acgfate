@@ -20,7 +20,7 @@ func (_ *WordDetailService) Detail(c *gin.Context) (resp sz.Response) {
 		return sz.CodeResponse(sz.CodeWordDeleted)
 	}
 	resp = sz.Success()
-	word.Likes = new(cache.WordDao).Likes(c, word.Wid) // update data from cache
+	word.UpdateLikes(new(cache.WordDao).Likes(c, word.Wid)) // update data from cache
 	resp.Data = sz.NewWord(word)
 	return
 }

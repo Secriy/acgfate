@@ -15,17 +15,17 @@ type UserLoginService struct {
 }
 
 // Login 用户登录服务
-func (service *UserLoginService) Login(c *gin.Context) sz.Response {
+func (s *UserLoginService) Login(c *gin.Context) sz.Response {
 	dao := new(database.UserDao)
-	user, err := dao.QueryByUname(service.Username)
+	user, err := dao.QueryByUname(s.Username)
 	if err != nil {
 		zap.S().Debugf("登录失败: %e", err)
 		return sz.CodeResponse(sz.CodeLoginIncorrect)
 	}
-	if !user.CheckPassword(service.Password) {
+	if !user.CheckPassword(s.Password) {
 		return sz.CodeResponse(sz.CodeLoginIncorrect)
 	}
-	service.SetSession(c, user)
+	s.SetSession(c, user)
 
 	zap.S().Infof("登录成功: %d", user.UID)
 
@@ -33,7 +33,7 @@ func (service *UserLoginService) Login(c *gin.Context) sz.Response {
 }
 
 // SetSession 保存 session
-func (service *UserLoginService) SetSession(c *gin.Context, user *model.User) {
+func (_ *UserLoginService) SetSession(c *gin.Context, user *model.User) {
 	s := sessions.Default(c)
 	s.Clear()
 	s.Set("uid", user.UID)

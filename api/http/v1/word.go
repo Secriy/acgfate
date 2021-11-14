@@ -28,7 +28,7 @@ func WordDetail(c *gin.Context) {
 
 func WordList(c *gin.Context) {
 	form := new(service.WordListService)
-	if err := c.ShouldBind(form); err == nil {
+	if err := c.ShouldBindQuery(form); err == nil {
 		res := form.List(c)
 		c.JSON(http.StatusOK, res)
 	} else {
