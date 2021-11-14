@@ -17,40 +17,123 @@ var doc = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "Secriy",
+            "url": "https://secriy.com/",
+            "email": "secriyal@gmail.com"
+        },
+        "license": {
+            "name": "MIT"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/category/list": {
+            "get": {
+                "description": "分区信息接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "分区信息接口",
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/serializer.Category"
+                                }
+                            }
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/category/{name}": {
+            "get": {
+                "description": "分区信息接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "分区信息接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "分区名称",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Category"
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/user/info": {
             "get": {
-                "description": "用户个人信息接口",
+                "description": "用户个人信息，要求登录",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "User"
                 ],
-                "summary": "用户个人信息",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "用户令牌",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
+                "summary": "用户个人信息接口",
                 "responses": {
                     "0": {
-                        "description": "msg: Success",
+                        "description": "成功",
                         "schema": {
                             "$ref": "#/definitions/serializer.User"
                         }
                     },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
                     "50000": {
-                        "description": "msg: 查询个人信息错误",
+                        "description": "服务器错误",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
                         }
@@ -70,11 +153,11 @@ var doc = `{
                 "tags": [
                     "User"
                 ],
-                "summary": "用户登录",
+                "summary": "用户登录接口",
                 "parameters": [
                     {
                         "description": "用户名, 密码",
-                        "name": "form",
+                        "name": "login",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -84,13 +167,19 @@ var doc = `{
                 ],
                 "responses": {
                     "0": {
-                        "description": "msg: Success",
+                        "description": "成功",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
                         }
                     },
-                    "30001": {
-                        "description": "msg: 参数错误",
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
                         }
@@ -114,7 +203,7 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "用户名, 密码, 邮箱, 昵称",
-                        "name": "form",
+                        "name": "register",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -124,13 +213,316 @@ var doc = `{
                 ],
                 "responses": {
                     "0": {
-                        "description": "msg: Success",
+                        "description": "成功",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
                         }
                     },
-                    "30001": {
-                        "description": "msg: 参数错误",
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/word/list": {
+            "get": {
+                "description": "文字列表接口，展示多个文字的相关信息，支持分页查询，按用户ID、分区ID查询",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Word"
+                ],
+                "summary": "文字列表接口，展示多个文字的相关信息",
+                "parameters": [
+                    {
+                        "description": "分页/用户/分区",
+                        "name": "param",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/service.WordListService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/serializer.Word"
+                                }
+                            }
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/word/post": {
+            "post": {
+                "description": "文字投稿接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Word"
+                ],
+                "summary": "文字投稿接口",
+                "parameters": [
+                    {
+                        "description": "投稿信息",
+                        "name": "word",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.WordPostService"
+                        }
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/word/trend": {
+            "get": {
+                "description": "文字热度趋势接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Word"
+                ],
+                "summary": "文字热度趋势接口",
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Trend"
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/word/{wid}": {
+            "get": {
+                "description": "文字详情接口，展示文字的相关信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Word"
+                ],
+                "summary": "文字详情接口，展示文字的相关信息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文字ID",
+                        "name": "wid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/serializer.Word"
+                                }
+                            }
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/word/{wid}/delete": {
+            "delete": {
+                "description": "文字删除接口，删除一个文字",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Word"
+                ],
+                "summary": "文字删除接口，删除一个文字",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文字ID",
+                        "name": "wid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/word/{wid}/like": {
+            "put": {
+                "description": "文字点赞接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Word"
+                ],
+                "summary": "文字点赞接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文字ID",
+                        "name": "wid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "文字取消点赞接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Word"
+                ],
+                "summary": "文字取消点赞接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文字ID",
+                        "name": "wid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "0": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "40000": {
+                        "description": "操作错误",
+                        "schema": {
+                            "$ref": "#/definitions/serializer.Response"
+                        }
+                    },
+                    "50000": {
+                        "description": "服务器错误",
                         "schema": {
                             "$ref": "#/definitions/serializer.Response"
                         }
@@ -140,6 +532,20 @@ var doc = `{
         }
     },
     "definitions": {
+        "serializer.Category": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
         "serializer.Response": {
             "type": "object",
             "properties": {
@@ -148,6 +554,38 @@ var doc = `{
                 },
                 "data": {},
                 "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "serializer.Trend": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_time": {
+                    "type": "string"
+                },
+                "edited_time": {
+                    "type": "string"
+                },
+                "likes": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "wid": {
                     "type": "string"
                 }
             }
@@ -168,9 +606,38 @@ var doc = `{
                     "type": "integer"
                 },
                 "uid": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "serializer.Word": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_time": {
+                    "type": "string"
+                },
+                "edited_time": {
+                    "type": "string"
+                },
+                "likes": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "wid": {
                     "type": "string"
                 }
             }
@@ -212,6 +679,42 @@ var doc = `{
                     "type": "string"
                 }
             }
+        },
+        "service.WordListService": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                }
+            }
+        },
+        "service.WordPostService": {
+            "type": "object",
+            "required": [
+                "category",
+                "content",
+                "title"
+            ],
+            "properties": {
+                "category": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`
@@ -227,8 +730,8 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "0.2.1",
-	Host:        "127.0.0.1:3000",
+	Version:     "0.3.0",
+	Host:        "localhost:3000",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
 	Title:       "ACG.Fate API",
